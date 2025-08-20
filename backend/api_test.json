@@ -1,0 +1,683 @@
+{
+  "info": {
+    "name": "EagRoute API Tests - Complete Collection",
+    "description": "Complete test collection for EagRoute delivery bot system",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01. System Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "API Documentation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/docs",
+              "host": ["{{baseUrl}}"],
+              "path": ["docs"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02. Map & Grid",
+      "item": [
+        {
+          "name": "Get Map Grid (Full 9x9)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/map/grid",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "map", "grid"]
+            }
+          }
+        },
+        {
+          "name": "Get All Nodes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/map/nodes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "map", "nodes"]
+            }
+          }
+        },
+        {
+          "name": "Get Restaurants",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/map/restaurants",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "map", "restaurants"]
+            }
+          }
+        },
+        {
+          "name": "Get Delivery Points",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/map/delivery-points",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "map", "delivery-points"]
+            }
+          }
+        },
+        {
+          "name": "Get Map Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/map/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "map", "stats"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03. Bot Management",
+      "item": [
+        {
+          "name": "Get All Bots",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bots/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bots", ""]
+            }
+          }
+        },
+        {
+          "name": "Get Bot by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bots/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bots", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create New Bot",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bot-Test\",\n  \"current_x\": 4,\n  \"current_y\": 4,\n  \"max_capacity\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bots/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bots", ""]
+            }
+          }
+        },
+        {
+          "name": "Update Bot Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"MAINTENANCE\",\n  \"battery_level\": 75\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bots/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bots", "1"]
+            }
+          }
+        },
+        {
+          "name": "Move Bot to Position",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bots/1/move?x=2&y=3",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bots", "1", "move"],
+              "query": [
+                {
+                  "key": "x",
+                  "value": "2",
+                  "description": "X coordinate (0-8)"
+                },
+                {
+                  "key": "y",
+                  "value": "3",
+                  "description": "Y coordinate (0-8)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Bot Route",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bots/1/route",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bots", "1", "route"]
+            }
+          }
+        },
+        {
+          "name": "Get Bot Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bots/1/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bots", "1", "orders"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04. Order Management",
+      "item": [
+        {
+          "name": "Create Order - Pizza",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"John Doe\",\n  \"customer_phone\": \"+1234567890\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 6,\n  \"pickup_y\": 2,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Order - Ramen",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Alice Smith\",\n  \"customer_phone\": \"+1987654321\",\n  \"restaurant_type\": \"RAMEN\",\n  \"pickup_x\": 2,\n  \"pickup_y\": 3,\n  \"delivery_x\": 1,\n  \"delivery_y\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Order - Sushi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Bob Wilson\",\n  \"restaurant_type\": \"SUSHI\",\n  \"pickup_x\": 1,\n  \"pickup_y\": 5,\n  \"delivery_x\": 5,\n  \"delivery_y\": 7\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Order - Curry",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Carol Davis\",\n  \"restaurant_type\": \"CURRY\",\n  \"pickup_x\": 4,\n  \"pickup_y\": 5,\n  \"delivery_x\": 8,\n  \"delivery_y\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", ""]
+            }
+          }
+        },
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", ""]
+            }
+          }
+        },
+        {
+          "name": "Get Pending Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/?status=PENDING",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", ""],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PICKED_UP\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", "1"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05. Route Optimization",
+      "item": [
+        {
+          "name": "Calculate Distance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routes/distance?start_x=0&start_y=0&end_x=8&end_y=8",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routes", "distance"],
+              "query": [
+                {
+                  "key": "start_x",
+                  "value": "0"
+                },
+                {
+                  "key": "start_y",
+                  "value": "0"
+                },
+                {
+                  "key": "end_x",
+                  "value": "8"
+                },
+                {
+                  "key": "end_y",
+                  "value": "8"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Optimize All Routes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routes/optimize",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routes", "optimize"]
+            }
+          }
+        },
+        {
+          "name": "Rebalance Orders",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routes/rebalance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routes", "rebalance"]
+            }
+          }
+        },
+        {
+          "name": "Get Efficiency Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routes/efficiency",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routes", "efficiency"]
+            }
+          }
+        },
+        {
+          "name": "Get Blocked Paths",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/routes/blocked-paths",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "routes", "blocked-paths"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "06. Error Testing",
+      "item": [
+        {
+          "name": "Invalid Restaurant Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Error Test\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 2,\n  \"pickup_y\": 3,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", ""]
+            }
+          }
+        },
+        {
+          "name": "Invalid Delivery Point",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Error Test 2\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 6,\n  \"pickup_y\": 2,\n  \"delivery_x\": 4,\n  \"delivery_y\": 4\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", ""]
+            }
+          }
+        },
+        {
+          "name": "Invalid Coordinates (Out of Bounds)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Error Test 3\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 10,\n  \"pickup_y\": 10,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", ""]
+            }
+          }
+        },
+        {
+          "name": "Move Bot Out of Bounds",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bots/1/move?x=10&y=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bots", "1", "move"],
+              "query": [
+                {
+                  "key": "x",
+                  "value": "10"
+                },
+                {
+                  "key": "y",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07. Simulation & Testing",
+      "item": [
+        {
+          "name": "Complete Delivery Simulation - Step 1: Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Simulation Customer\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 6,\n  \"pickup_y\": 2,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", ""]
+            }
+          }
+        },
+        {
+          "name": "Complete Delivery Simulation - Step 2: Move to Pickup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bots/1/move?x=6&y=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bots", "1", "move"],
+              "query": [
+                {
+                  "key": "x",
+                  "value": "6",
+                  "description": "Pizza Corner X"
+                },
+                {
+                  "key": "y",
+                  "value": "2",
+                  "description": "Pizza Corner Y"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Complete Delivery Simulation - Step 3: Move to Delivery",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bots/1/move?x=0&y=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "bots", "1", "move"],
+              "query": [
+                {
+                  "key": "x",
+                  "value": "0",
+                  "description": "House X"
+                },
+                {
+                  "key": "y",
+                  "value": "0",
+                  "description": "House Y"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Stress Test - Multiple Orders",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Stress Test Customer\",\n  \"restaurant_type\": \"RAMEN\",\n  \"pickup_x\": 2,\n  \"pickup_y\": 3,\n  \"delivery_x\": 5,\n  \"delivery_y\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", ""]
+            }
+          }
+        },
+        {
+          "name": "Load Test - Create 10 Orders",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Load Test {{$randomInt}}\",\n  \"restaurant_type\": \"CURRY\",\n  \"pickup_x\": 4,\n  \"pickup_y\": 5,\n  \"delivery_x\": 8,\n  \"delivery_y\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/orders/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "orders", ""]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
