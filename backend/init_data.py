@@ -5,16 +5,16 @@ from models.node import Node
 from models.bot import Bot
 from models.blocked_path import BlockedPath
 from sqlalchemy import text
+import csv
 
 def init_complete_database():
-    """Initialize complete database with all data including blocked paths"""
     # Create tables first
     Base.metadata.create_all(bind=engine)
     
     db = SessionLocal()
     
     try:
-        print("🚀 Initializing EagRoute database with enhanced restrictions...")
+        print("Initializing EagRoute database with enhanced restrictions...")
         
         # Clear existing data
         db.execute(text("""
@@ -24,7 +24,7 @@ def init_complete_database():
         db.commit()
         
         # Create all 81 nodes in 9x9 grid
-        print("📍 Creating 9x9 grid nodes...")
+        print("Creating 9x9 grid nodes...")
         for y in range(9):
             for x in range(9):
                 node = Node(
@@ -36,16 +36,45 @@ def init_complete_database():
                 db.add(node)
         
         db.commit()
-        print("✅ Grid nodes created")
+        print("Grid nodes created")
+
+        delivery_points = []
+        restaurants = []
+
+        with open("./sample_data.csv", newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+
+                x = int(row["x"])
+                y = int(row["y"])
+                
+                is_ramen = row["RAMEN"].lower() == ("true")
+                if is_ramen:
+                    restaurants.append({"x": x, "y": y, "type": "RAMEN", "name": "Ramen Ichiran"})
+                is_sushi = row["SUSHI"].lower() == ("true")
+                if is_sushi:
+                    restaurants.append({"x": x, "y": y, "type": "SUSHI", "name": "Sushiro"})
+                is_curry = row["CURRY"].lower() == ("true")
+                if is_curry:
+                    restaurants.append({"x": x, "y": y, "type": "CURRY", "name": "Indian Curry"})
+                is_pizza = row["PIZZA"].lower() == ("true")
+                if is_pizza:
+                    restaurants.append({"x": x, "y": y, "type": "PIZZA", "name": "Pizza Hut"})
+
+                is_dest = row["delivery_point"].lower() == ("true")
+                
+                if is_dest:
+                    delivery_points.append({"x": x, "y": int(row["y"])})
+
         
         # Create delivery points (houses) - RESTRICTED FOR TRANSIT
-        delivery_points = [
-            {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 5, "y": 0},
-            {"x": 8, "y": 1}, {"x": 0, "y": 2}, {"x": 7, "y": 3},
-            {"x": 3, "y": 4}
-        ]
+        # delivery_points = [
+        #     {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 5, "y": 0},
+        #     {"x": 8, "y": 1}, {"x": 0, "y": 2}, {"x": 7, "y": 3},
+        #     {"x": 3, "y": 4}
+        # ]
         
-        print("🏠 Setting up delivery points (restricted for transit)...")
+        print("🏠 Setting up delivery points")
         for i, point in enumerate(delivery_points):
             node = db.query(Node).filter(
                 Node.x == point["x"],
@@ -57,18 +86,18 @@ def init_complete_database():
                 node.name = f"House_{i+1}"
         
         db.commit()
-        print(f"✅ {len(delivery_points)} delivery points created (restricted for transit)")
+        print(f"✅ {len(delivery_points)} delivery points created")
         
         # Create restaurants - RESTRICTED FOR TRANSIT
-        restaurants = [
-            {"x": 2, "y": 3, "type": "RAMEN", "name": "Ramen Ichiban"},
-            {"x": 4, "y": 5, "type": "CURRY", "name": "Curry Palace"},
-            {"x": 6, "y": 2, "type": "PIZZA", "name": "Pizza Corner"},
-            {"x": 1, "y": 5, "type": "SUSHI", "name": "Sushi Zen"},
-            {"x": 7, "y": 6, "type": "RAMEN", "name": "Ramen Dragon"},
-        ]
+        # restaurants = [
+        #     {"x": 2, "y": 3, "type": "RAMEN", "name": "Ramen Ichiban"},
+        #     {"x": 4, "y": 5, "type": "CURRY", "name": "Curry Palace"},
+        #     {"x": 6, "y": 2, "type": "PIZZA", "name": "Pizza Corner"},
+        #     {"x": 1, "y": 5, "type": "SUSHI", "name": "Sushi Zen"},
+        #     {"x": 7, "y": 6, "type": "RAMEN", "name": "Ramen Dragon"},
+        # ]
         
-        print("🏪 Setting up restaurants (restricted for transit)...")
+        print("🏪 Setting up restaurants")
         for restaurant in restaurants:
             node = db.query(Node).filter(
                 Node.x == restaurant["x"],
@@ -81,7 +110,7 @@ def init_complete_database():
                 node.name = restaurant["name"]
         
         db.commit()
-        print(f"✅ {len(restaurants)} restaurants created (restricted for transit)")
+        print(f"{len(restaurants)} restaurants created (restricted for transit)")
         
         # Create bot stations - ALLOWED FOR TRANSIT
         bot_stations = [
@@ -100,16 +129,18 @@ def init_complete_database():
                 node.name = station["name"]
         
         db.commit()
-        print(f"✅ {len(bot_stations)} bot stations created (allowed for transit)")
+        print(f"{len(bot_stations)} bot stations created (allowed for transit)")
         
-        # Create 3 delivery bots
+        # Create 5 delivery bots
         bot_starting_positions = [
             {"name": "Bot-Alpha", "x": 4, "y": 4},
             {"name": "Bot-Beta", "x": 0, "y": 8},
-            {"name": "Bot-Gamma", "x": 8, "y": 0},
+            {"name": "Bot-Gamma", "x": 4, "y": 4},
+            {"name": "Bot-Delta", "x": 4, "y": 4},
+            {"name": "Bot-Epsilon", "x": 4, "y": 4},
         ]
         
-        print("🤖 Creating delivery bots...")
+        print("Creating delivery bots...")
         for bot_data in bot_starting_positions:
             bot = Bot(
                 name=bot_data["name"],
@@ -124,30 +155,54 @@ def init_complete_database():
         db.commit()
         print(f"✅ {len(bot_starting_positions)} bots created")
         
-        # Create blocked paths from your data
-        blocked_paths_data = [
-            {"from_id": 4, "to_id": 12},
-            {"from_id": 6, "to_id": 14},
-            {"from_id": 8, "to_id": 16},
-            {"from_id": 9, "to_id": 17},
-            {"from_id": 10, "to_id": 18},
-            {"from_id": 17, "to_id": 18},
-            {"from_id": 23, "to_id": 24},
-            {"from_id": 26, "to_id": 27},
-            {"from_id": 27, "to_id": 28},
-            {"from_id": 35, "to_id": 36},
-            {"from_id": 38, "to_id": 39},
-            {"from_id": 43, "to_id": 44},
-            {"from_id": 49, "to_id": 50},
-            {"from_id": 50, "to_id": 51},
-            {"from_id": 54, "to_id": 55},
-            {"from_id": 55, "to_id": 56},
-            {"from_id": 52, "to_id": 61},
-            {"from_id": 54, "to_id": 63},
-            {"from_id": 72, "to_id": 73},
-        ]
+
         
-        print("🚫 Setting up blocked paths...")
+
+
+        # Create blocked paths from your data
+        # blocked_paths_data = [
+        #     {"from_id": 4, "to_id": 12},
+        #     {"from_id": 6, "to_id": 14},
+        #     {"from_id": 8, "to_id": 16},
+        #     {"from_id": 9, "to_id": 17},
+        #     {"from_id": 10, "to_id": 18},
+        #     {"from_id": 17, "to_id": 18},
+        #     {"from_id": 23, "to_id": 24},
+        #     {"from_id": 26, "to_id": 27},
+        #     {"from_id": 27, "to_id": 28},
+        #     {"from_id": 35, "to_id": 36},
+        #     {"from_id": 38, "to_id": 39},
+        #     {"from_id": 43, "to_id": 44},
+        #     {"from_id": 49, "to_id": 50},
+        #     {"from_id": 50, "to_id": 51},
+        #     {"from_id": 54, "to_id": 55},
+        #     {"from_id": 55, "to_id": 56},
+        #     {"from_id": 52, "to_id": 61},
+        #     {"from_id": 54, "to_id": 63},
+        #     {"from_id": 72, "to_id": 73},
+        # ]
+        
+        # Extraxt blocked csv data 
+        blocked_paths_data = []
+
+        with open('./BlockedPaths.csv', newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f, skipinitialspace=True)
+
+            for row in reader:
+                norm = { (k or "").strip().lstrip("\ufeff").lower(): (v or "").strip()
+                        for k, v in row.items() }
+
+                try:
+                    from_id = int(norm["from_id"])
+                    to_id   = int(norm["to_id"])
+                except (KeyError, ValueError) as e:
+
+                    print(f"Skipping bad row {row}: {e}")
+                    continue
+
+                blocked_paths_data.append({"from_id": from_id, "to_id": to_id})
+
+        print("Setting up blocked paths...")
         for path in blocked_paths_data:
             blocked_path = BlockedPath(
                 from_node_id=path["from_id"],
@@ -155,16 +210,16 @@ def init_complete_database():
             )
             db.add(blocked_path)
             
-            # Convert to coordinates for display
+
             from_x = (path["from_id"] - 1) % 9
             from_y = (path["from_id"] - 1) // 9
             to_x = (path["to_id"] - 1) % 9
             to_y = (path["to_id"] - 1) // 9
             
-            print(f"  🚫 ({from_x},{from_y}) ↔ ({to_x},{to_y}) [IDs: {path['from_id']} ↔ {path['to_id']}]")
+            print(f"  ({from_x},{from_y}) ↔ ({to_x},{to_y}) [IDs: {path['from_id']} ↔ {path['to_id']}]")
         
         db.commit()
-        print(f"✅ {len(blocked_paths_data)} blocked paths created")
+        print(f" {len(blocked_paths_data)} blocked paths created")
         
         # Print summary
         total_nodes = db.query(Node).count()
@@ -174,11 +229,10 @@ def init_complete_database():
         total_blocked = db.query(BlockedPath).count()
         
         print("\n" + "="*60)
-        print("🎉 ENHANCED DATABASE INITIALIZATION COMPLETE!")
         print("="*60)
-        print(f"✅ Total nodes: {total_nodes}")
-        print(f"🏠 Houses (delivery points - restricted): {total_houses}")
-        print(f"🏪 Restaurants (restricted for transit): {total_restaurants}")
+        print(f"Total nodes: {total_nodes}")
+        print(f"Houses (delivery points - restricted): {total_houses}")
+        print(f"Restaurants (restricted for transit): {total_restaurants}")
         print(f"🔌 Bot stations (allowed for transit): {len(bot_stations)}")
         print(f"🤖 Delivery bots: {total_bots}")
         print(f"🚫 Blocked paths: {total_blocked}")
@@ -187,10 +241,10 @@ def init_complete_database():
         print("  ✅ Bots cannot transit through restaurants/houses")
         print("  ✅ Bots can enter restaurants for pickup")
         print("  ✅ Bots can enter houses for delivery")
-        print("  ✅ Bot stations allow transit")
-        print("  ✅ Blocked paths are enforced")
-        print("  ✅ Multi-order optimization")
-        print("  ✅ Automatic return to station")
+        print("  Bot stations allow transit")
+        print("  Blocked paths are enforced")
+        print("  Multi-order optimization")
+        print("  Automatic return to station")
         print("="*60)
         print("📍 Ready to test with Postman/Insomnia!")
         print("🌐 API running at: http://localhost:8000")
