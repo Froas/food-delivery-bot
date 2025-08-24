@@ -1,5 +1,6 @@
 import React from 'react'
 import type { MapGrid, GridCell } from '../types'
+import robotUrl from '../assets/svg/robot.svg'
 
 interface GridMapProps {
     gridData: MapGrid | null
@@ -56,7 +57,7 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
         if (cell.bots && cell.bots.length > 0) {
         const bot = cell.bots[0]
         bgColor = 'bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 border-blue-500 animate-pulse'
-        cellContent = `🤖`
+        cellContent = <img src={robotUrl} alt="Robot" className="w-6 h-6" />
         shadowClass = 'shadow-lg hover:shadow-2xl'
         
         if (selectedBot === bot?.id) {
@@ -131,7 +132,9 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
         <div className="mt-8 grid grid-cols-2 gap-4 text-sm">
             <div className="space-y-2">
             <div className="flex items-center gap-3 p-2 bg-blue-50 rounded-lg">
-                <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-600 rounded flex items-center justify-center">🤖</div>
+                <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-600 rounded flex items-center justify-center">
+                  <img src={robotUrl} alt="Robot" className="w-5 h-5" />
+                </div>
                 <span className="font-medium text-blue-800">Delivery Bot</span>
             </div>
             <div className="flex items-center gap-3 p-2 bg-green-50 rounded-lg">

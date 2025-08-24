@@ -1,6 +1,7 @@
 import React from 'react'
 import type { MapGrid, Order } from '../types'
 import { useBots } from '../hooks/userApi'
+import robotUrl from '../assets/svg/robot.svg'
 
 interface SystemStatsProps {
     gridData: MapGrid | null
@@ -25,7 +26,7 @@ const SystemStats: React.FC<SystemStatsProps> = ({ gridData, orders }) => {
         {
         title: 'Active Bots',
         value: `${stats.activeBots}/${stats.totalBots}`,
-        icon: '🤖',
+        icon: robotUrl,
         color: 'from-blue-500 to-blue-600',
         textColor: 'text-blue-100',
         bgAccent: 'bg-blue-500/10',
@@ -81,7 +82,11 @@ const SystemStats: React.FC<SystemStatsProps> = ({ gridData, orders }) => {
             >
                 <div className="relative z-10">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-2xl">{stat.icon}</span>
+                    {typeof stat.icon === 'string' && stat.icon.endsWith('.svg') ? (
+                      <img src={stat.icon} alt="Robot" className="w-7 h-7" />
+                    ) : (
+                      <span className="text-2xl">{stat.icon}</span>
+                    )}
                     {stat.progress && (
                     <div className="w-8 h-1 bg-white/30 rounded-full overflow-hidden">
                         <div 

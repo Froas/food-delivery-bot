@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Bot, Package, MapPin, Activity, AlertTriangle } from 'lucide-react'
 import clsx from 'clsx'
+import robotUrl from '../assets/svg/robot.svg'
 
 // Types
 interface Bot {
@@ -446,7 +447,12 @@ const GridMap: React.FC<{
     // Add bots if present
     if (cell.bots && cell.bots.length > 0) {
       bgColor = 'bg-blue-400'
-      cellContent = `🤖${cell.bots[0]?.id}`
+      cellContent = (
+        <>
+          <img src={robotUrl} alt="Robot" className="w-4 h-4 inline" />
+          {cell.bots[0]?.id}
+        </>
+      )
       if (selectedBot === cell.bots[0]?.id) {
         cellClasses += ' ring-4 ring-red-400'
       }
@@ -487,7 +493,9 @@ const GridMap: React.FC<{
         <div className="space-y-1">
           <div className="flex items-center">
             <div className="w-4 h-4 bg-blue-400 rounded mr-2"></div>
-            <span>🤖 = Bot</span>
+            <span>
+              <img src={robotUrl} alt="Robot" className="w-4 h-4 inline" /> = Bot
+            </span>
           </div>
           <div className="flex items-center">
             <div className="w-4 h-4 bg-green-200 rounded mr-2"></div>

@@ -1,5 +1,6 @@
 import React from 'react'
 import type { Order } from '../types'
+import robotUrl from '../assets/svg/robot.svg'
 
 interface OrderListProps {
     orders: Order[]
@@ -122,7 +123,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
                     <div className="flex items-center justify-between pt-2 border-t border-gray-200">
                         {order.bot_id && (
                         <div className="flex items-center gap-1 text-blue-600">
-                            <span>🤖</span>
+                            <img src={robotUrl} alt="Robot" className="w-4 h-4 inline" />
                             <span className="text-xs font-medium">Bot #{order.bot_id}</span>
                         </div>
                         )}
