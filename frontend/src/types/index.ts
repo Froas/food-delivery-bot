@@ -77,8 +77,8 @@ export interface BlockedSegment {
 }
 
 export interface BlockedPathsResponse {
-    total_blocked: number;
-    blocked_segments: BlockedSegment[];
+    total_blocked: number
+    blocked_segments: BlockedSegment[]
 }
 
 export interface GridCell {

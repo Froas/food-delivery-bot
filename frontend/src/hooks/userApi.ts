@@ -151,7 +151,18 @@ export const useMoveBot = () => {
     const queryClient = useQueryClient()
     
     return useMutation({
-        mutationFn: ({ botId, x, y }: { botId: number ; x: number ; y: number }) => 
+        mutationFn: (
+                { botId, 
+                    x, 
+                    y 
+
+                }
+                : 
+                { 
+                    botId: number ; 
+                    x: number ; 
+                    y: number 
+                }) => 
         ApiService.moveBot(botId, x, y),
         onSuccess: (data, variables) => {
         queryClient.invalidateQueries({ queryKey: queryKeys.bots })
@@ -170,7 +181,15 @@ export const useUpdateOrderStatus = () => {
     const queryClient = useQueryClient()
     
     return useMutation({
-        mutationFn: ({ orderId, status }: { orderId: number ; status: string }) => 
+        mutationFn: (
+            { 
+                orderId, 
+                status 
+            }: 
+            { 
+                orderId: number ; 
+                status: string 
+            }) => 
         ApiService.updateOrderStatus(orderId, status),
         onSuccess: (data, variables) => {
         queryClient.invalidateQueries({ queryKey: queryKeys.orders })

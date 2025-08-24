@@ -57,8 +57,8 @@ export class ApiService {
   // Map & Grid APIs
 
     static async getBlockedPaths(): Promise<BlockedPathsResponse> {
-        const response: AxiosResponse<BlockedPathsResponse> = await apiClient.get(API_VERSION + '/map/blocked-paths');
-        return response.data;
+        const response: AxiosResponse<BlockedPathsResponse> = await apiClient.get(API_VERSION + '/map/blocked-paths')
+        return response.data
     }
 
     static async getMapGrid(): Promise<MapGrid> {
