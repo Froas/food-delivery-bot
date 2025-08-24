@@ -2,6 +2,7 @@ from pydantic_settings import BaseSettings
 from pydantic import Field
 from urllib.parse import quote_plus
 
+#DB setting
 class Settings(BaseSettings):
     db_user: str = Field(..., alias="DB_USER")
     db_pass: str = Field(..., alias="DB_PASS")
