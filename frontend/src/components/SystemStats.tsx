@@ -83,9 +83,9 @@ const SystemStats: React.FC<SystemStatsProps> = ({ gridData, orders }) => {
                 <div className="relative z-10">
                 <div className="flex items-center justify-between mb-2">
                     {typeof stat.icon === 'string' && stat.icon.endsWith('.svg') ? (
-                      <img src={stat.icon} alt="Robot" className="w-7 h-7" />
+                        <img src={stat.icon} alt="Robot" className="w-7 h-7" />
                     ) : (
-                      <span className="text-2xl">{stat.icon}</span>
+                        <span className="text-2xl">{stat.icon}</span>
                     )}
                     {stat.progress && (
                     <div className="w-8 h-1 bg-white/30 rounded-full overflow-hidden">
