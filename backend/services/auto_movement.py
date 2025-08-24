@@ -15,49 +15,49 @@ class AutoMovementService:
         self.bot_routes: Dict[int, List[Tuple[int, int]]] = {} 
         self.bot_route_index: Dict[int, int] = {} 
         self.bot_returning_to_station: Dict[int, bool] = {} 
-        self.bot_stations = []  # Cache bot stations
+        self.bot_stations = []  
         self.bot_planned_routes: Dict[int, List[dict]] = {}  
-        self.bot_completed_waypoints: Dict[int, set] = {}  # Track completed waypoints
+        self.bot_completed_waypoints: Dict[int, set] = {}  
     
     async def start_auto_movement(self):
-        """Start automatic bot movement system"""
+        # Start automatic bot movement system
         self.is_running = True
         self._load_bot_stations()
-        print("🚀 Auto-movement system started!")
-        print(f"📍 Found {len(self.bot_stations)} bot stations")
+        print("Auto-movement system started!")
+        print(f"Found {len(self.bot_stations)} bot stations")
         
         while self.is_running:
             try:
                 await self._process_all_bots()
                 await asyncio.sleep(self.move_interval)
             except Exception as e:
-                print(f"❌ Auto-movement error: {e}")
+                print(f"Auto-movement error: {e}")
                 import traceback
                 traceback.print_exc()
                 await asyncio.sleep(1)
     
     def stop_auto_movement(self):
-        """Stop automatic bot movement"""
+        # Stop automatic bot movement
         self.is_running = False
         self.bot_routes.clear()
         self.bot_route_index.clear()
         self.bot_returning_to_station.clear()
         self.bot_planned_routes.clear()
         self.bot_completed_waypoints.clear()
-        print("🛑 Auto-movement system stopped!")
+        print("Auto-movement system stopped!")
     
     def _load_bot_stations(self):
-        """Load all bot stations from database"""
+        # Load all bot stations from database
         db = SessionLocal()
         try:
             stations = db.query(Node).filter(Node.is_bot_station == True).all()
             self.bot_stations = [(station.x, station.y, station.name) for station in stations]
-            print(f"🔌 Loaded bot stations: {[(s[0], s[1]) for s in self.bot_stations]}")
+            print(f"Loaded bot stations: {[(s[0], s[1]) for s in self.bot_stations]}")
         finally:
             db.close()
     
     def _find_nearest_station(self, bot_position: Tuple[int, int], db: Session) -> Optional[Tuple[int, int]]:
-        """Find the nearest bot station to the given position"""
+        # Find the nearest bot station to the given position
         if not self.bot_stations:
             return None
         
@@ -77,7 +77,7 @@ class AutoMovementService:
         return nearest_station
     
     def _plan_multi_order_route(self, bot: Bot, orders: List[Order], db: Session) -> List[dict]:
-        """Plan optimal route for multiple orders using pickup-first strategy"""
+        # Plan optimal route for multiple orders using pickup-first strategy
         if not orders:
             return []
         
@@ -89,14 +89,13 @@ class AutoMovementService:
         pickup_orders = [o for o in orders if o.status == 'ASSIGNED']
         delivery_orders = [o for o in orders if o.status == 'PICKED_UP']
         
-        print(f"📋 Bot {bot.id} planning route: {len(pickup_orders)} pickups, {len(delivery_orders)} deliveries")
+        print(f"Bot {bot.id} planning route: {len(pickup_orders)} pickups, {len(delivery_orders)} deliveries")
         
         # Get completed waypoints for this bot
         completed = self.bot_completed_waypoints.get(bot.id, set())
         
         # Strategy: Complete all pickups first, then all deliveries
         
-        # 1. Plan pickups using nearest-neighbor approach
         remaining_pickups = pickup_orders.copy()
         while remaining_pickups:
             nearest_order = None
@@ -137,8 +136,7 @@ class AutoMovementService:
             else:
                 break  # No more valid pickups
         
-        # 2. Plan deliveries for picked-up orders
-        all_delivery_orders = delivery_orders + pickup_orders  # Include all orders for delivery planning
+        all_delivery_orders = delivery_orders + pickup_orders  
         remaining_deliveries = all_delivery_orders.copy()
         
         while remaining_deliveries:
@@ -185,12 +183,12 @@ class AutoMovementService:
                 
                 remaining_deliveries.remove(nearest_order)
             else:
-                break  # No more valid deliveries
+                break  
         
         return planned_waypoints
     
     async def _process_all_bots(self):
-        """Process movement for all active bots"""
+        # Process movement for all active bots
         db = SessionLocal()
         try:
             # Get all bots (including idle ones that might need to return to station)
@@ -204,7 +202,7 @@ class AutoMovementService:
             db.close()
     
     async def _process_single_bot(self, bot: Bot, db: Session):
-        """Process movement for a single bot"""
+        # Process movement for a single bot
         # Get bot's current orders
         orders = db.query(Order).filter(
             Order.bot_id == bot.id,
@@ -221,7 +219,7 @@ class AutoMovementService:
             await self._handle_idle_bot(bot, db)
     
     async def _move_bot_with_multi_order_plan(self, bot: Bot, orders: List[Order], db: Session):
-        """Move bot according to multi-order plan"""
+        # Move bot according to multi-order plan
         bot_id = bot.id
         
         # Check if we need to recalculate the plan
@@ -236,15 +234,15 @@ class AutoMovementService:
             if new_plan:
                 print(f"🗺️ Bot {bot_id} new multi-order plan:")
                 for i, waypoint in enumerate(new_plan):
-                    status = "✅" if waypoint['waypoint_key'] in self.bot_completed_waypoints.get(bot_id, set()) else "⏳"
+                    status = "OK" if waypoint['waypoint_key'] in self.bot_completed_waypoints.get(bot_id, set()) else "⏳"
                     print(f"   {i+1}. {status} {waypoint['type'].upper()} at {waypoint['position']} (Order #{waypoint['order_id']})")
             else:
-                print(f"📋 Bot {bot_id} has no waypoints to plan")
+                print(f"Bot {bot_id} has no waypoints to plan")
         
         # Get next destination from plan
         next_destination = self._get_next_destination_from_plan(bot, db)
         if not next_destination:
-            print(f"🏁 Bot {bot_id} has no more destinations")
+            print(f"Bot {bot_id} has no more destinations")
             return
         
         # Calculate or get cached route to next destination
@@ -267,7 +265,7 @@ class AutoMovementService:
         current_order_ids = {o.id for o in current_orders}
         
         if planned_order_ids != current_order_ids:
-            print(f"🔄 Bot {bot_id} order list changed, recalculating route")
+            print(f"Bot {bot_id} order list changed, recalculating route")
             return True
         
         # Check if any order status changed (ASSIGNED -> PICKED_UP)
@@ -277,7 +275,7 @@ class AutoMovementService:
             
             # If order is PICKED_UP but pickup waypoint not marked as completed, recalculate
             if order.status == 'PICKED_UP' and pickup_key not in completed:
-                print(f"🔄 Bot {bot_id} order {order.id} status changed to PICKED_UP, recalculating route")
+                print(f"Bot {bot_id} order {order.id} status changed to PICKED_UP, recalculating route")
                 return True
         
         return False
@@ -324,11 +322,11 @@ class AutoMovementService:
             self.bot_completed_waypoints[bot_id] = set()
         
         self.bot_completed_waypoints[bot_id].add(waypoint_key)
-        print(f"✅ Bot {bot_id} completed waypoint: {waypoint_type} for order {order_id} at {position}")
+        print(f"Bot {bot_id} completed waypoint: {waypoint_type} for order {order_id} at {position}")
         
         # Force route recalculation after completing a waypoint
         if bot_id in self.bot_planned_routes:
-            print(f"🔄 Bot {bot_id} forcing route recalculation after waypoint completion")
+            print(f"Bot {bot_id} forcing route recalculation after waypoint completion")
             # Clear the current plan to force recalculation
             self.bot_planned_routes[bot_id] = []
             self._clear_bot_route(bot_id)
@@ -355,7 +353,7 @@ class AutoMovementService:
             nearest_station = self._find_nearest_station(current_pos, db)
             if nearest_station:
                 self.bot_returning_to_station[bot.id] = True
-                print(f"🔋 Bot {bot.id} starting return to station {nearest_station}")
+                print(f"Bot {bot.id} starting return to station {nearest_station}")
         
         # Move towards station if returning
         if self.bot_returning_to_station.get(bot.id, False):
@@ -367,7 +365,7 @@ class AutoMovementService:
                     
                     # Check if reached station
                     if (bot.current_x, bot.current_y) == nearest_station:
-                        print(f"🏠 Bot {bot.id} returned to station {nearest_station}")
+                        print(f"Bot {bot.id} returned to station {nearest_station}")
                         bot.status = 'IDLE'
                         bot.battery_level = min(100, bot.battery_level + 10)
                         self.bot_returning_to_station[bot.id] = False
@@ -397,11 +395,11 @@ class AutoMovementService:
                 self.bot_route_index[bot_id] = 0
                 
                 if route_type == "station":
-                    print(f"🔌 Bot {bot_id} route to station: {current_pos} → {destination} ({len(new_route)-1} steps)")
+                    print(f"Bot {bot_id} route to station: {current_pos} → {destination} ({len(new_route)-1} steps)")
                 else:
-                    print(f"🎯 Bot {bot_id} next waypoint: {current_pos} → {destination} ({len(new_route)-1} steps)")
+                    print(f"Bot {bot_id} next waypoint: {current_pos} → {destination} ({len(new_route)-1} steps)")
             else:
-                print(f"❌ No route found for Bot {bot_id} from {current_pos} to {destination}")
+                print(f"No route found for Bot {bot_id} from {current_pos} to {destination}")
                 return []
         
         return self.bot_routes.get(bot_id, [])
@@ -429,9 +427,9 @@ class AutoMovementService:
         orders_info = f"({bot.current_orders} orders)"
         
         if self.bot_returning_to_station.get(bot_id, False):
-            print(f"🔋 Bot {bot_id}: {old_pos} → ({bot.current_x},{bot.current_y}) [returning to station {next_index}/{len(route)-1}]")
+            print(f"Bot {bot_id}: {old_pos} → ({bot.current_x},{bot.current_y}) [returning to station {next_index}/{len(route)-1}]")
         else:
-            print(f"🚛 Bot {bot_id}: {old_pos} → ({bot.current_x},{bot.current_y}) [multi-order {next_index}/{len(route)-1}] {orders_info}")
+            print(f"Bot {bot_id}: {old_pos} → ({bot.current_x},{bot.current_y}) [multi-order {next_index}/{len(route)-1}] {orders_info}")
         
         # Check if reached pickup/delivery location
         await self._check_location_events(bot, db)
@@ -443,7 +441,7 @@ class AutoMovementService:
         # Check if reached a bot station
         if self._is_at_bot_station(current_pos):
             if self.bot_returning_to_station.get(bot.id, False):
-                print(f"🏠 Bot {bot.id} arrived at station {current_pos}")
+                print(f"Bot {bot.id} arrived at station {current_pos}")
                 bot.status = 'IDLE'
                 bot.battery_level = min(100, bot.battery_level + 20)
                 self.bot_returning_to_station[bot.id] = False
@@ -462,7 +460,7 @@ class AutoMovementService:
                 current_pos == (order.pickup_x, order.pickup_y)):
                 order.status = 'PICKED_UP'
                 self._mark_waypoint_completed(bot, current_pos, "pickup", order.id)
-                print(f"📦 Bot {bot.id} picked up order {order.id} at {current_pos} [total: {bot.current_orders} orders]")
+                print(f"Bot {bot.id} picked up order {order.id} at {current_pos} [total: {bot.current_orders} orders]")
                 break
             
             # Check if this is a delivery location
@@ -473,7 +471,7 @@ class AutoMovementService:
                 bot.battery_level = max(1, bot.battery_level - 5)
                 self._mark_waypoint_completed(bot, current_pos, "delivery", order.id)
                 
-                print(f"🏠 Bot {bot.id} delivered order {order.id} at {current_pos} [remaining: {bot.current_orders} orders]")
+                print(f"Bot {bot.id} delivered order {order.id} at {current_pos} [remaining: {bot.current_orders} orders]")
                 
                 # Check if all orders are completed
                 remaining_orders = db.query(Order).filter(
@@ -484,7 +482,7 @@ class AutoMovementService:
                 if remaining_orders == 0:
                     bot.status = 'IDLE'
                     self._clear_planned_route(bot.id)
-                    print(f"✅ Bot {bot.id} completed all orders, will return to station")
+                    print(f"Bot {bot.id} completed all orders, will return to station")
                 break
     
     async def _check_location_events(self, bot: Bot, db: Session):
