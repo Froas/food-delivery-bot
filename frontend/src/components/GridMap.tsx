@@ -85,16 +85,15 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
                         <div
                             key={`blocked-${dir.name}-${x}-${y}`}
                             className={`absolute ${dir.className} z-30`}
-                            title="⛔ BLOCKED PATH - Robots Cannot Pass!"
-                        >
-                            {/* Red barrier */}
+                            title="BLOCKED PATH - Robots Cannot Pass!"
+                            >
                             <div className={`w-full h-full bg-red-600 ${dir.borderStyle} opacity-90 shadow-lg`}>
                                 <div className="w-full h-full bg-gradient-to-br from-red-500 to-red-800"></div>
                             </div>
                             
-                            {/* Warning symbol */}
+
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-white text-xs font-bold drop-shadow-lg">🚫</span>
+                                <span className="text-white text-xs font-bold drop-shadow-lg"></span>
                             </div>
                         </div>
                     )
