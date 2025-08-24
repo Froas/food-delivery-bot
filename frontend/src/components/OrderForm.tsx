@@ -29,7 +29,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
     const handleSubmit = async () => {
         if (!formData.customer_name || !formData.restaurant_type || !formData.delivery_x) {
-        setError('Please fill in all required fields')
+            setError('Please fill in all required fields')
         return
         }
 

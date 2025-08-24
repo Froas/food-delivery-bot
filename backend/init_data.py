@@ -86,7 +86,7 @@ def init_complete_database():
                 node.name = f"House_{i+1}"
         
         db.commit()
-        print(f"✅ {len(delivery_points)} delivery points created")
+        print(f" {len(delivery_points)} delivery points created")
         
         # Create restaurants - RESTRICTED FOR TRANSIT
         # restaurants = [
@@ -153,7 +153,7 @@ def init_complete_database():
             db.add(bot)
         
         db.commit()
-        print(f"✅ {len(bot_starting_positions)} bots created")
+        print(f" {len(bot_starting_positions)} bots created")
         
 
         
@@ -251,11 +251,11 @@ def init_complete_database():
         print("API docs at: http://localhost:8000/docs")
         
         # Test the routing system
-        print("\n🧪 Testing routing system...")
+        print("\n Testing routing system...")
         test_enhanced_routing(db)
         
     except Exception as e:
-        print(f"❌ Error initializing database: {e}")
+        print(f"Error initializing database: {e}")
         db.rollback()
         raise
     finally:
@@ -268,11 +268,11 @@ def test_enhanced_routing(db: Session):
         
         route_optimizer = RouteOptimizer(db)
         
-        print(f"🧪 Testing enhanced routing:")
-        print(f"  📊 Loaded {len(route_optimizer.blocked_paths)} blocked path segments")
-        print(f"  🏪 Restaurants (restricted): {len(route_optimizer.restricted_nodes['restaurants'])}")
-        print(f"  🏠 Houses (restricted): {len(route_optimizer.restricted_nodes['houses'])}")
-        print(f"  🔌 Bot stations (allowed): {len(route_optimizer.restricted_nodes['bot_stations'])}")
+        print(f"  Testing enhanced routing:")
+        print(f"  Loaded {len(route_optimizer.blocked_paths)} blocked path segments")
+        print(f"  Restaurants (restricted): {len(route_optimizer.restricted_nodes['restaurants'])}")
+        print(f"  Houses (restricted): {len(route_optimizer.restricted_nodes['houses'])}")
+        print(f"  Bot stations (allowed): {len(route_optimizer.restricted_nodes['bot_stations'])}")
         
         # Test specific blocked paths
         test_blocked_cases = [
@@ -282,10 +282,10 @@ def test_enhanced_routing(db: Session):
             ((0, 0), (1, 0)),  # Should be allowed
         ]
         
-        print("\n  🚫 Testing blocked paths:")
+        print("\n Testing blocked paths:")
         for from_pos, to_pos in test_blocked_cases:
             is_blocked = route_optimizer.is_path_blocked(from_pos, to_pos)
-            status = "🚫 BLOCKED" if is_blocked else "✅ ALLOWED"
+            status = " BLOCKED" if is_blocked else " ALLOWED"
             print(f"    {from_pos} → {to_pos}: {status}")
         
         # Test transit restrictions
@@ -293,13 +293,13 @@ def test_enhanced_routing(db: Session):
         house_pos = (0, 0)       # House
         station_pos = (4, 4)     # Bot station
         
-        print("\n  🚦 Testing transit restrictions:")
-        print(f"    Transit through restaurant {restaurant_pos}: {'🚫 BLOCKED' if route_optimizer.is_node_restricted_for_transit(restaurant_pos, (8,8), (0,0)) else '✅ ALLOWED'}")
-        print(f"    Transit through house {house_pos}: {'🚫 BLOCKED' if route_optimizer.is_node_restricted_for_transit(house_pos, (8,8), (1,1)) else '✅ ALLOWED'}")
-        print(f"    Transit through station {station_pos}: {'🚫 BLOCKED' if route_optimizer.is_node_restricted_for_transit(station_pos, (8,8), (0,0)) else '✅ ALLOWED'}")
+        print("\n   Testing transit restrictions:")
+        print(f"    Transit through restaurant {restaurant_pos}: {' BLOCKED' if route_optimizer.is_node_restricted_for_transit(restaurant_pos, (8,8), (0,0)) else ' ALLOWED'}")
+        print(f"    Transit through house {house_pos}: {' BLOCKED' if route_optimizer.is_node_restricted_for_transit(house_pos, (8,8), (1,1)) else ' ALLOWED'}")
+        print(f"    Transit through station {station_pos}: {' BLOCKED' if route_optimizer.is_node_restricted_for_transit(station_pos, (8,8), (0,0)) else ' ALLOWED'}")
         
         # Test pathfinding scenarios
-        print("\n  🗺️ Testing pathfinding scenarios:")
+        print("\n   Testing pathfinding scenarios:")
         test_routes = [
             ((4, 4), (6, 2), "Bot station to Pizza restaurant"),
             ((6, 2), (0, 0), "Pizza restaurant to House"),
@@ -320,26 +320,26 @@ def test_enhanced_routing(db: Session):
                     if route_optimizer.is_node_restricted_for_transit(pos, end, start):
                         transit_issues.append(pos)
                 
-                status = "✅ VALID" if is_valid and not transit_issues else "⚠️ ISSUES"
+                status = " VALID" if is_valid and not transit_issues else " ISSUES"
                 print(f"    {description}:")
                 print(f"      Path: {len(path)-1} steps {status}")
                 if transit_issues:
                     print(f"      Transit violations: {transit_issues}")
             else:
-                print(f"    {description}: ❌ NO PATH FOUND")
+                print(f"    {description}: NO PATH FOUND")
         
-        print("  ✅ Routing system test completed")
+        print("   Routing system test completed")
         
     except Exception as e:
-        print(f"  ❌ Error testing routing: {e}")
+        print(f"  Error testing routing: {e}")
 
 def reset_database():
     """Reset database by dropping and recreating all tables"""
     from core.database import Base
-    print("🔄 Resetting database...")
+    print(" Resetting database...")
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
-    print("✅ Database reset complete")
+    print(" Database reset complete")
 
 if __name__ == "__main__":
     import sys

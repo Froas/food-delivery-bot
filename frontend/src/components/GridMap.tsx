@@ -51,25 +51,25 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
         const directions = [
             { 
                 dx: 1, dy: 0, 
-                className: 'right-0 top-0 h-full w-3', 
+                className: 'right-0 top-0 h-full w-[6px]', 
                 name: 'right',
                 borderStyle: 'border-r-4 border-red-600'
             },
             { 
                 dx: -1, dy: 0, 
-                className: 'left-0 top-0 h-full w-3', 
+                className: 'left-0 top-0 h-full w-[6px]', 
                 name: 'left',
                 borderStyle: 'border-l-4 border-red-600'
             },
             { 
                 dx: 0, dy: 1, 
-                className: 'bottom-0 left-0 w-full h-3', 
+                className: 'bottom-0 left-0 w-full h-[6px]', 
                 name: 'down',
                 borderStyle: 'border-b-4 border-red-600'
             },
             { 
                 dx: 0, dy: -1, 
-                className: 'top-0 left-0 w-full h-3', 
+                className: 'top-0 left-0 w-full h-[6px]', 
                 name: 'up',
                 borderStyle: 'border-t-4 border-red-600'
             }
@@ -88,7 +88,7 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
                             className={`absolute ${dir.className} z-30`}
                             title="BLOCKED PATH - Robots Cannot Pass!"
                             >
-                            <div className={`w-full h-full bg-red-600 ${dir.borderStyle} opacity-90 shadow-lg`}>
+                            <div className={`w-full h-full bg-red-900 ${dir.borderStyle} opacity-90 shadow-lg`}>
                                 <div className="w-full h-full bg-gradient-to-br from-red-500 to-red-800"></div>
                             </div>
                             
@@ -150,10 +150,10 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             cellContent = <img src={robotUrl} alt="Robot" className="w-6 h-6" />
             shadowClass = 'shadow-lg hover:shadow-2xl'
         
-        if (selectedBot === bot?.id) {
-            cellClasses += ' ring-4 ring-red-400 ring-opacity-75 scale-110 z-20'
-            bgColor += ' ring-red-400'
-        }
+        // if (selectedBot === bot?.id) {
+        //     cellClasses += ' ring-4 ring-red-400 ring-opacity-75 scale-110 z-20'
+        //     bgColor += ' ring-red-400'
+        // }
         }
 
 
@@ -175,7 +175,7 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             {getBlockedPathOverlay(x, y)}
             
 
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-30">
+        {/* <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-30">
             {cell.name} ({x},{y})
             {cell.bots && cell.bots.length > 0 && (
                 <div>Bot #{cell.bots[0]?.id} - {cell.bots[0]?.battery_level}% battery</div>
@@ -183,7 +183,7 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             {cell.active_orders && cell.active_orders.length > 0 && (
                 <div className="text-orange-300">{cell.active_orders.length} active orders</div>
             )}
-            </div>
+        </div> */}
         </div>
         )
     }
@@ -219,7 +219,7 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             </div>
             
 
-            <div className="absolute -left-8 top-4 bottom-4 flex flex-col justify-around text-xs text-gray-500 font-medium">
+            <div className="absolute -left-8 top-4 bottom-4 flex flex-col justify-around text-xs text-gray-500 font-medium ml-1">
             {Array.from({ length: 9 }, (_, i) => (
                 <div key={i} className="flex items-center justify-center w-6 h-12">
                 {i}
@@ -264,24 +264,17 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
                 <div className="w-6 h-6 bg-red-600 rounded flex items-center justify-center text-white">{UI_ICONS.BLOCKED}</div>
                 <span className="font-medium text-red-800">Blocked Path</span>
             </div>
-            <div className="text-xs text-gray-600 p-3 bg-amber-50 rounded-lg border border-amber-200">
-                <div className="flex items-center gap-2 mb-1">
-                <div className="text-amber-600">{UI_ICONS.WARNING}</div>
-                <span className="font-bold text-amber-800">IMPORTANT</span>
-                </div>
-                Red barriers show where robots <strong>CANNOT PASS</strong>
-            </div>
             </div>
         </div>
         
-        {selectedBot && (
+        {/* {selectedBot && (
             <div className="mt-4 p-3 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
             <div className="flex items-center gap-2">
                 <div className="text-blue-600">{UI_ICONS.TARGET}</div>
                 <span className="text-blue-800 font-medium">Bot #{selectedBot} selected - Click any empty cell to move (pathfinding will avoid blocked paths)</span>
             </div>
             </div>
-        )}
+        )} */}
         </div>
     )
 }

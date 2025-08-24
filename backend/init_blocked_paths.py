@@ -2,13 +2,13 @@
 from sqlalchemy.orm import Session
 from core.database import SessionLocal
 from models.blocked_path import BlockedPath
+from services.route_algorithm import RouteOptimizer
 
 def init_blocked_paths():
-    """Initialize blocked paths from your CSV data"""
+
     db = SessionLocal()
     
     try:
-        # Your blocked paths data
         blocked_paths_data = [
             {"from_id": 4, "to_id": 12},
             {"from_id": 6, "to_id": 14},
@@ -31,14 +31,14 @@ def init_blocked_paths():
             {"from_id": 72, "to_id": 73},
         ]
         
-        print(f"🚫 Initializing {len(blocked_paths_data)} blocked paths...")
+        print(f" Initializing {len(blocked_paths_data)} blocked paths...")
         
-        # Clear existing blocked paths
+
         db.query(BlockedPath).delete()
         
-        # Add new blocked paths
+
         for path_data in blocked_paths_data:
-            # Check if this blocked path already exists
+            
             existing = db.query(BlockedPath).filter(
                 BlockedPath.from_node_id == path_data["from_id"],
                 BlockedPath.to_node_id == path_data["to_id"]
@@ -51,61 +51,61 @@ def init_blocked_paths():
                 )
                 db.add(blocked_path)
                 
-                # Convert IDs to coordinates for display
+                
                 from_x = (path_data["from_id"] - 1) % 9
                 from_y = (path_data["from_id"] - 1) // 9
                 to_x = (path_data["to_id"] - 1) % 9
                 to_y = (path_data["to_id"] - 1) // 9
                 
-                print(f"  🚫 Added: ({from_x},{from_y}) ↔ ({to_x},{to_y}) [IDs: {path_data['from_id']} ↔ {path_data['to_id']}]")
+                print(f" Added: ({from_x},{from_y}) ↔ ({to_x},{to_y}) [IDs: {path_data['from_id']} ↔ {path_data['to_id']}]")
         
         db.commit()
         
         # Verify what was added
         total_blocked = db.query(BlockedPath).count()
-        print(f"✅ Successfully initialized {total_blocked} blocked paths in database")
+        print(f"Successfully initialized {total_blocked} blocked paths in database")
         
         # Show some examples of coordinate conversion
-        print("\n📍 Examples of ID to coordinate conversion:")
+        print("\n Examples of ID to coordinate conversion:")
         for i in [4, 12, 27, 50, 73]:
             x = (i - 1) % 9
             y = (i - 1) // 9
             print(f"  ID {i} = ({x}, {y})")
         
     except Exception as e:
-        print(f"❌ Error initializing blocked paths: {e}")
+        print(f"Error initializing blocked paths: {e}")
         db.rollback()
         raise
     finally:
         db.close()
 
 def test_blocked_paths():
-    """Test blocked path loading"""
-    from services.route_algorithm import RouteOptimizer
+
+
     
     db = SessionLocal()
     try:
         route_optimizer = RouteOptimizer(db)
         
-        print(f"\n🧪 Testing blocked path system:")
+        print(f"\n Testing blocked path system:")
         print(f"  Loaded {len(route_optimizer.blocked_paths)} blocked path segments")
         print(f"  Restaurants: {len(route_optimizer.restricted_nodes['restaurants'])}")
         print(f"  Houses: {len(route_optimizer.restricted_nodes['houses'])}")
         
         # Test a few specific blocked paths
         test_cases = [
-            ((0, 3), (1, 3)),  # Should be blocked (ID 4 -> 12)
-            ((0, 5), (1, 5)),  # Should be blocked (ID 6 -> 14)
-            ((0, 0), (1, 0)),  # Should be allowed
+            ((0, 3), (1, 3)), 
+            ((0, 5), (1, 5)),  
+            ((0, 0), (1, 0)),  
         ]
         
         for from_pos, to_pos in test_cases:
             is_blocked = route_optimizer.is_path_blocked(from_pos, to_pos)
-            status = "🚫 BLOCKED" if is_blocked else "✅ ALLOWED"
+            status = "BLOCKED" if is_blocked else "ALLOWED"
             print(f"  {from_pos} → {to_pos}: {status}")
         
         # Test pathfinding with restrictions
-        print(f"\n🗺️ Testing pathfinding:")
+        print(f"\n Testing pathfinding:")
         test_routes = [
             ((0, 0), (8, 8)),  # Diagonal across map
             ((4, 4), (6, 2)),  # Bot station to pizza restaurant
@@ -124,17 +124,17 @@ def test_blocked_paths():
                         transit_violations.append(pos)
                 
                 if transit_violations:
-                    print(f"    ⚠️ Transit violations: {transit_violations}")
+                    print(f"Transit violations: {transit_violations}")
                 else:
-                    print(f"    ✅ Path respects transit restrictions")
+                    print(f"Path respects transit restrictions")
             else:
-                print(f"  {start} → {end}: ❌ No path found")
+                print(f"  {start} → {end}: No path found")
     
     finally:
         db.close()
 
 if __name__ == "__main__":
-    print("🚀 Initializing blocked paths system...")
+    print("Initializing blocked paths system...")
     init_blocked_paths()
     test_blocked_paths()
-    print("✅ Blocked paths system ready!")
+    print("Blocked paths system ready!")

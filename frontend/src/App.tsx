@@ -31,7 +31,7 @@ const EagRouteApp: React.FC = () => {
         console.error('Error moving bot:', error)
       }
     } else if (cell.bots && cell.bots.length > 0) {
-      setSelectedBot(cell.bots[0]!.id)
+      // setSelectedBot(cell.bots[0]!.id)
     }
   }
 
