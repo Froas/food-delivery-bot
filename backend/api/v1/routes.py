@@ -7,6 +7,7 @@ from services.route_algorithm import RouteOptimizer
 
 router = APIRouter()
 
+# Get optimized route
 @router.get("/routes/optimize")
 async def optimize_all_routes(db: Session = Depends(get_db)):
     route_optimizer = RouteOptimizer(db)
@@ -26,6 +27,7 @@ async def optimize_all_routes(db: Session = Depends(get_db)):
     
     return results
 
+# Get route distance
 @router.get("/routes/distance")
 async def calculate_distance(
     start_x: int,

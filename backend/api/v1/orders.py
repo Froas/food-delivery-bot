@@ -8,9 +8,11 @@ from schemas.order import OrderCreate, OrderUpdate, OrderResponse
 from services.bot_manager import BotManager
 from core.database import SessionLocal
 from models.bot import Bot
+import datetime
 
 router = APIRouter()
 
+# Create the Order
 @router.post("/orders/", response_model=OrderResponse)
 async def create_order(
     order: OrderCreate,
@@ -42,7 +44,6 @@ async def create_order(
             detail=f"Invalid delivery location at position ({order.delivery_x}, {order.delivery_y})"
         )
     
-    import datetime
     time_threshold = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=30)
     recent_orders = db.query(Order).filter(
         Order.pickup_x == order.pickup_x,
@@ -66,6 +67,7 @@ async def create_order(
     
     return db_order
 
+# Assign the Order to the bot
 async def assign_order_to_bot(order_id: int):
 
     db = SessionLocal()
@@ -83,6 +85,7 @@ async def assign_order_to_bot(order_id: int):
     finally:
         db.close()
 
+# Get all Order
 @router.get("/orders/", response_model=List[OrderResponse])
 async def get_orders(
     skip: int = 0,
@@ -99,14 +102,16 @@ async def get_orders(
     orders = query.offset(skip).limit(limit).all()
     return orders
 
+# Get the specific Order
 @router.get("/orders/{order_id}", response_model=OrderResponse)
 async def get_order(order_id: int, db: Session = Depends(get_db)):
-    """Get specific order by ID"""
+
     order = db.query(Order).filter(Order.id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     return order
 
+# Update the order
 @router.put("/orders/{order_id}", response_model=OrderResponse)
 async def update_order(
     order_id: int,
@@ -126,6 +131,7 @@ async def update_order(
     
     return order
 
+# Delete the Order
 @router.delete("/orders/{order_id}")
 async def cancel_order(order_id: int, db: Session = Depends(get_db)):
 

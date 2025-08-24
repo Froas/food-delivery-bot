@@ -11,10 +11,10 @@ from models.blocked_path import BlockedPath
 
 router = APIRouter()
 
+# Get a map grid
 @router.get("/map/grid")
 async def get_map_grid(db: Session = Depends(get_db)):
-    """Get complete 9x9 grid with all nodes, bots, and active orders"""
-    
+
     # Get all nodes
     nodes = db.query(Node).all()
     
@@ -101,14 +101,16 @@ async def get_map_grid(db: Session = Depends(get_db)):
         "active_orders": len(active_orders)
     }
 
+# Get all Nodes
 @router.get("/map/nodes", response_model=List[NodeResponse])
 async def get_all_nodes(db: Session = Depends(get_db)):
-    """Get all nodes in the map"""
+
     return db.query(Node).all()
 
+# Get all Restaurants
 @router.get("/map/restaurants")
 async def get_restaurants(db: Session = Depends(get_db)):
-    """Get all restaurant locations"""
+
     restaurants = db.query(Node).filter(Node.is_restaurant == True).all()
     
     return [
@@ -122,9 +124,10 @@ async def get_restaurants(db: Session = Depends(get_db)):
         for r in restaurants
     ]
 
+# Get all Delivery point
 @router.get("/map/delivery-points")
 async def get_delivery_points(db: Session = Depends(get_db)):
-    """Get all delivery points (houses)"""
+
     houses = db.query(Node).filter(Node.is_delivery_point == True).all()
     
     return [
@@ -137,9 +140,10 @@ async def get_delivery_points(db: Session = Depends(get_db)):
         for h in houses
     ]
 
+# Get map statistics
 @router.get("/map/stats")
 async def get_map_stats(db: Session = Depends(get_db)):
-    """Get map statistics"""
+
     total_nodes = db.query(Node).count()
     restaurants = db.query(Node).filter(Node.is_restaurant == True).count()
     houses = db.query(Node).filter(Node.is_delivery_point == True).count()
@@ -172,9 +176,11 @@ async def get_map_stats(db: Session = Depends(get_db)):
         }
     }
 
+
+# Get blocked path
 @router.get("/map/blocked-paths")
 async def get_blocked_paths(db: Session = Depends(get_db)):
-    """Get all blocked paths for frontend visualization"""
+
     blocked_paths = db.query(BlockedPath).all()
     
     visualization_data = []
@@ -195,8 +201,9 @@ async def get_blocked_paths(db: Session = Depends(get_db)):
         "blocked_segments": visualization_data
     }
 
+# Get direction for blocked path
 def _get_direction(from_x: int, from_y: int, to_x: int, to_y: int) -> str:
-    """Get direction of blocked path for visualization"""
+    
     dx = to_x - from_x
     dy = to_y - from_y
     

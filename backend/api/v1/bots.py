@@ -9,37 +9,38 @@ from schemas.bot import BotCreate, BotUpdate, BotResponse
 from services.route_algorithm import RouteOptimizer
 
 router = APIRouter()
-
+# Create a new bot
 @router.post("/bots/", response_model=BotResponse)
 async def create_bot(bot: BotCreate, db: Session = Depends(get_db)):
-    """Create a new delivery bot"""
+
     db_bot = Bot(**bot.model_dump())
     db.add(db_bot)
     db.commit()
     db.refresh(db_bot)
     return db_bot
-
+# Get all bots
 @router.get("/bots/", response_model=List[BotResponse])
 async def get_bots(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    """Get all bots"""
+
     bots = db.query(Bot).offset(skip).limit(limit).all()
     return bots
-
+# Get the specify bot
 @router.get("/bots/{bot_id}", response_model=BotResponse)
 async def get_bot(bot_id: int, db: Session = Depends(get_db)):
-    """Get specific bot by ID"""
+    
     bot = db.query(Bot).filter(Bot.id == bot_id).first()
     if not bot:
         raise HTTPException(status_code=404, detail="Bot not found")
     return bot
 
+# Update the bot
 @router.put("/bots/{bot_id}", response_model=BotResponse)
 async def update_bot(
     bot_id: int,
     bot_update: BotUpdate,
     db: Session = Depends(get_db)
 ):
-    """Update bot status, position, or other properties"""
+
     bot = db.query(Bot).filter(Bot.id == bot_id).first()
     if not bot:
         raise HTTPException(status_code=404, detail="Bot not found")
@@ -53,14 +54,14 @@ async def update_bot(
     
     return bot
 
+# Get bot route
 @router.get("/bots/{bot_id}/route")
 async def get_bot_route(bot_id: int, db: Session = Depends(get_db)):
-    """Get optimized route for a specific bot"""
+    
     bot = db.query(Bot).filter(Bot.id == bot_id).first()
     if not bot:
         raise HTTPException(status_code=404, detail="Bot not found")
     
-    # Get assigned orders
     orders = db.query(Order).filter(
         Order.bot_id == bot_id,
         Order.status.in_(['ASSIGNED', 'PICKED_UP'])
@@ -75,6 +76,7 @@ async def get_bot_route(bot_id: int, db: Session = Depends(get_db)):
     
     return route
 
+# Move bot
 @router.post("/bots/{bot_id}/move")
 async def move_bot(
     bot_id: int,
@@ -82,7 +84,7 @@ async def move_bot(
     y: int,
     db: Session = Depends(get_db)
 ):
-    """Move bot to new position"""
+
     bot = db.query(Bot).filter(Bot.id == bot_id).first()
     if not bot:
         raise HTTPException(status_code=404, detail="Bot not found")
@@ -96,7 +98,7 @@ async def move_bot(
     bot.current_y = y
     db.commit()
     
-    # Check if bot reached pickup/delivery location
+
     await check_bot_location_updates(bot, db)
     
     return {
@@ -105,9 +107,10 @@ async def move_bot(
         "bot_id": bot_id
     }
 
+# Get bot's order
 @router.get("/bots/{bot_id}/orders")
 async def get_bot_orders(bot_id: int, db: Session = Depends(get_db)):
-    """Get all orders assigned to a specific bot"""
+    
     bot = db.query(Bot).filter(Bot.id == bot_id).first()
     if not bot:
         raise HTTPException(status_code=404, detail="Bot not found")
@@ -116,7 +119,7 @@ async def get_bot_orders(bot_id: int, db: Session = Depends(get_db)):
     return orders
 
 async def check_bot_location_updates(bot: Bot, db: Session):
-    """Check if bot reached any pickup or delivery locations"""
+    
     orders = db.query(Order).filter(
         Order.bot_id == bot.id,
         Order.status.in_(['ASSIGNED', 'PICKED_UP'])
