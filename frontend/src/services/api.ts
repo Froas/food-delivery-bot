@@ -15,7 +15,7 @@ import type {
 } from '../types'
 
 const API_BASE_URL = 'http://localhost:8000'
-const API_VERSION = '/api/v1/'
+const API_VERSION = '/api/v1'
 
 const apiClient = axios.create({
     baseURL: API_BASE_URL,
