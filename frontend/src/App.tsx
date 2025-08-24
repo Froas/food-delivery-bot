@@ -10,6 +10,7 @@ import OrderForm from './components/OrderForm'
 import GridMap from './components/GridMap'
 import OrderList from './components/OrderList'
 import robotUrl from './assets/svg/robot.svg'
+import { UI_ICONS } from './components/Icons'
 
 const EagRouteApp: React.FC = () => {
   const [selectedBot, setSelectedBot] = useState<number | null>(null)
@@ -40,13 +41,15 @@ const EagRouteApp: React.FC = () => {
         <div className="bg-white rounded-2xl shadow-2xl border border-red-100 p-8 max-w-md w-full">
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-              <span className="text-3xl text-white">⚠️</span>
+              <div className="text-3xl text-white">{UI_ICONS.WARNING}</div>
             </div>
             <h2 className="text-2xl font-bold text-gray-800 mb-3">Connection Error</h2>
             <p className="text-gray-600 mb-6 leading-relaxed">Unable to connect to the EagRoute backend server.</p>
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
             </div>
-            <button onClick={() => window.location.reload()} className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105">🔄 Retry Connection</button>
+            <button onClick={() => window.location.reload()} className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 flex items-center justify-center gap-2">
+              {UI_ICONS.REFRESH} Retry Connection
+            </button>
           </div>
         </div>
       </div>
@@ -93,7 +96,7 @@ const EagRouteApp: React.FC = () => {
             {selectedBot !== null && (
               <div className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 lg:px-6 py-2 lg:py-3 rounded-xl shadow-lg animate-pulse">
                 <div className="flex items-center gap-2">
-                  <span className="text-base lg:text-lg">🎯</span>
+                  <div className="text-base lg:text-lg">{UI_ICONS.TARGET}</div>
                   <div>
                     <div className="font-bold text-sm lg:text-base">Bot #{selectedBot} Selected</div>
                     <div className="text-xs lg:text-sm text-red-100 hidden sm:block">Click empty cell to move</div>

@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Order } from '../types'
 import robotUrl from '../assets/svg/robot.svg'
+import { FOOD_ICONS, UI_ICONS, getOrderStatusIcon, getFoodIcon } from './Icons'
 
 interface OrderListProps {
     orders: Order[]
@@ -12,54 +13,48 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
         case 'PENDING': 
             return { 
             color: 'bg-orange-500', 
-            icon: '⏳', 
+            icon: getOrderStatusIcon('PENDING'),
             text: 'text-orange-700',
             bg: 'bg-orange-50 border-orange-200'
             }
         case 'ASSIGNED': 
             return { 
             color: 'bg-blue-500', 
-            icon: '🔄', 
+            icon: getOrderStatusIcon('ASSIGNED'),
             text: 'text-blue-700',
             bg: 'bg-blue-50 border-blue-200'
             }
         case 'PICKED_UP': 
             return { 
             color: 'bg-purple-500', 
-            icon: '📦', 
+            icon: getOrderStatusIcon('PICKED_UP'),
             text: 'text-purple-700',
             bg: 'bg-purple-50 border-purple-200'
             }
         case 'DELIVERED': 
             return { 
             color: 'bg-green-500', 
-            icon: '✅', 
+            icon: getOrderStatusIcon('DELIVERED'),
             text: 'text-green-700',
             bg: 'bg-green-50 border-green-200'
             }
         case 'CANCELLED': 
             return { 
             color: 'bg-red-500', 
-            icon: '❌', 
+            icon: getOrderStatusIcon('CANCELLED'),
             text: 'text-red-700',
             bg: 'bg-red-50 border-red-200'
             }
         default: 
             return { 
             color: 'bg-gray-500', 
-            icon: '❓', 
+            icon: getOrderStatusIcon('default'),
             text: 'text-gray-700',
             bg: 'bg-gray-50 border-gray-200'
             }
         }
     }
 
-    const restaurantIcons: Record<string, string> = {
-        RAMEN: '🍜',
-        PIZZA: '🍕', 
-        CURRY: '🍛',
-        SUSHI: '🍣'
-    }
 
     return (
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
@@ -78,7 +73,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
             {orders.length === 0 ? (
             <div className="text-center py-12">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">📋</span>
+                <div className="text-2xl">{UI_ICONS.CLIPBOARD}</div>
                 </div>
                 <p className="text-gray-500 font-medium">No orders yet</p>
                 <p className="text-gray-400 text-sm">Create your first order to get started!</p>
@@ -110,13 +105,13 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
                     
                     <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2 text-gray-600">
-                        <span>{restaurantIcons[order.restaurant_type]}</span>
+                        <div>{getFoodIcon(order.restaurant_type)}</div>
                         <span className="font-medium">{order.restaurant_type}</span>
                         <span className="text-gray-400">from ({order.pickup_x}, {order.pickup_y})</span>
                     </div>
                     
                     <div className="flex items-center gap-2 text-gray-600">
-                        <span>🏠</span>
+                        <div>{UI_ICONS.HOME}</div>
                         <span>To ({order.delivery_x}, {order.delivery_y})</span>
                     </div>
                     
@@ -129,7 +124,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
                         )}
                         {order.estimated_time && (
                         <div className="flex items-center gap-1 text-gray-500">
-                            <span>⏱️</span>
+                            <div>{UI_ICONS.TIMER}</div>
                             <span className="text-xs">ETA: {order.estimated_time}s</span>
                         </div>
                         )}

@@ -2,6 +2,7 @@ import React from 'react'
 import type { MapGrid, Order } from '../types'
 import { useBots } from '../hooks/userApi'
 import robotUrl from '../assets/svg/robot.svg'
+import { SYSTEM_STATS_ICONS } from './Icons'
 
 interface SystemStatsProps {
     gridData: MapGrid | null
@@ -35,7 +36,7 @@ const SystemStats: React.FC<SystemStatsProps> = ({ gridData, orders }) => {
         {
         title: 'Pending Orders',
         value: stats.pendingOrders,
-        icon: '⏳',
+        icon: SYSTEM_STATS_ICONS.PENDING,
         color: 'from-orange-500 to-orange-600',
         textColor: 'text-orange-100',
         bgAccent: 'bg-orange-500/10',
@@ -44,7 +45,7 @@ const SystemStats: React.FC<SystemStatsProps> = ({ gridData, orders }) => {
         {
         title: 'In Progress',
         value: stats.activeOrders,
-        icon: '🚀',
+        icon: SYSTEM_STATS_ICONS.ACTIVE,
         color: 'from-green-500 to-green-600',
         textColor: 'text-green-100',
         bgAccent: 'bg-green-500/10'
@@ -52,7 +53,7 @@ const SystemStats: React.FC<SystemStatsProps> = ({ gridData, orders }) => {
         {
         title: 'Delivered',
         value: stats.deliveredOrders,
-        icon: '✅',
+        icon: SYSTEM_STATS_ICONS.DELIVERED,
         color: 'from-purple-500 to-purple-600',
         textColor: 'text-purple-100',
         bgAccent: 'bg-purple-500/10'

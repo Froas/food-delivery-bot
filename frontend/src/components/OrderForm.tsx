@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import type { Restaurant, DeliveryPoint, CreateOrderRequest } from '../types'
 import type { UseMutationResult } from '@tanstack/react-query'
+import { FOOD_ICONS, UI_ICONS, getFoodIcon } from './Icons'
 
 interface OrderFormProps {
     restaurants: Restaurant[]
@@ -72,18 +73,12 @@ const OrderForm: React.FC<OrderFormProps> = ({
         }
     }
 
-    const restaurantIcons: Record<string, string> = {
-        RAMEN: '🍜',
-        PIZZA: '🍕', 
-        CURRY: '🍛',
-        SUSHI: '🍣'
-    }
 
     return (
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
         <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
-            <span className="text-white text-lg">📝</span>
+            <div className="text-white text-lg">{UI_ICONS.CLIPBOARD}</div>
             </div>
             <h2 className="text-xl font-bold text-gray-800">Create New Order</h2>
         </div>
@@ -91,7 +86,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
         {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-lg">
             <div className="flex items-center">
-                <span className="text-red-500 mr-2">⚠️</span>
+                <div className="text-red-500 mr-2">{UI_ICONS.WARNING}</div>
                 <span className="text-red-700 font-medium">{error}</span>
             </div>
             </div>
@@ -100,7 +95,9 @@ const OrderForm: React.FC<OrderFormProps> = ({
         <div className="space-y-5">
             <div className="group">
             <label className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                👤 Customer Name
+                <div className="flex items-center gap-1">
+                    {UI_ICONS.USER} Customer Name
+                </div>
                 <span className="text-red-500">*</span>
             </label>
             <input
@@ -115,7 +112,9 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
             <div className="group">
             <label className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                📞 Phone Number
+                <div className="flex items-center gap-1">
+                    {UI_ICONS.PHONE} Phone Number
+                </div>
             </label>
             <input
                 type="text"
@@ -128,7 +127,9 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
             <div className="group">
             <label className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                🏪 Restaurant
+                <div className="flex items-center gap-1">
+                    {UI_ICONS.RESTAURANT} Restaurant
+                </div>
                 <span className="text-red-500">*</span>
             </label>
             <select
@@ -140,7 +141,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 <option value="">Select Restaurant</option>
                 {restaurants.map(restaurant => (
                 <option key={restaurant.id} value={restaurant.restaurant_type}>
-                    {restaurantIcons[restaurant.restaurant_type]} {restaurant.name} ({restaurant.restaurant_type}) - ({restaurant.x}, {restaurant.y})
+                    {restaurant.name} ({restaurant.restaurant_type}) - ({restaurant.x}, {restaurant.y})
                 </option>
                 ))}
             </select>
@@ -148,7 +149,9 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
             <div className="group">
             <label className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                🏠 Delivery Address
+                <div className="flex items-center gap-1">
+                    {UI_ICONS.HOME} Delivery Address
+                </div>
                 <span className="text-red-500">*</span>
             </label>
             <select
@@ -165,7 +168,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 <option value="0,0">Select Delivery Address</option>
                 {deliveryPoints.map(point => (
                 <option key={point.id} value={`${point.x},${point.y}`}>
-                    🏠 {point.name} - ({point.x}, {point.y})
+                    {point.name} - ({point.x}, {point.y})
                 </option>
                 ))}
             </select>
@@ -188,7 +191,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 </>
                 ) : (
                 <>
-                    <span>🚀</span>
+                    {UI_ICONS.ROCKET}
                     Create Order
                 </>
                 )}

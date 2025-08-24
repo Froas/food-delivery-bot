@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import type { MapGrid, GridCell, BlockedPathsResponse } from '../types'
 import { ApiService } from '../services/api'
 import robotUrl from '../assets/svg/robot.svg'
+import { FOOD_ICONS, UI_ICONS, getFoodIcon } from './Icons'
 
 interface GridMapProps {
     gridData: MapGrid | null
@@ -129,22 +130,16 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
         
 
         if (cell.is_restaurant) {
-        const restaurantIcons: Record<string, string> = {
-            RAMEN: '🍜',
-            PIZZA: '🍕', 
-            CURRY: '🍛',
-            SUSHI: '🍣'
-        }
         bgColor = 'bg-gradient-to-br from-yellow-200 to-orange-300 hover:from-yellow-300 hover:to-orange-400 border-yellow-400'
-        cellContent = restaurantIcons[cell.restaurant_type || ''] || cell.restaurant_type?.[0] || 'R'
+        cellContent = <div className="text-yellow-700">{getFoodIcon(cell.restaurant_type || '')}</div>
         shadowClass = 'shadow-md hover:shadow-xl'
         } else if (cell.is_delivery_point) {
         bgColor = 'bg-gradient-to-br from-green-200 to-emerald-300 hover:from-green-300 hover:to-emerald-400 border-green-400'
-        cellContent = '🏠'
+        cellContent = <div className="text-green-700">{UI_ICONS.DELIVERY_POINT}</div>
         shadowClass = 'shadow-md hover:shadow-xl'
         } else if (cell.is_bot_station) {
         bgColor = 'bg-gradient-to-br from-purple-200 to-violet-300 hover:from-purple-300 hover:to-violet-400 border-purple-400'
-        cellContent = '⚡'
+        cellContent = <div className="text-purple-700">{UI_ICONS.BOT_STATION}</div>
         shadowClass = 'shadow-md hover:shadow-xl'
         }
 
@@ -249,29 +244,29 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
                 <span className="font-medium text-blue-800">Delivery Bot</span>
             </div>
             <div className="flex items-center gap-3 p-2 bg-green-50 rounded-lg">
-                <div className="w-6 h-6 bg-gradient-to-br from-green-200 to-emerald-300 rounded flex items-center justify-center">🏠</div>
+                <div className="w-6 h-6 bg-gradient-to-br from-green-200 to-emerald-300 rounded flex items-center justify-center text-green-700">{UI_ICONS.DELIVERY_POINT}</div>
                 <span className="font-medium text-green-800">Delivery Point</span>
             </div>
             </div>
             <div className="space-y-2">
             <div className="flex items-center gap-3 p-2 bg-yellow-50 rounded-lg">
-                <div className="w-6 h-6 bg-gradient-to-br from-yellow-200 to-orange-300 rounded flex items-center justify-center">🍕</div>
+                <div className="w-6 h-6 bg-gradient-to-br from-yellow-200 to-orange-300 rounded flex items-center justify-center text-yellow-700">{getFoodIcon('PIZZA')}</div>
                 <span className="font-medium text-yellow-800">Restaurant</span>
             </div>
             <div className="flex items-center gap-3 p-2 bg-purple-50 rounded-lg">
-                <div className="w-6 h-6 bg-gradient-to-br from-purple-200 to-violet-300 rounded flex items-center justify-center">⚡</div>
+                <div className="w-6 h-6 bg-gradient-to-br from-purple-200 to-violet-300 rounded flex items-center justify-center text-purple-700">{UI_ICONS.BOT_STATION}</div>
                 <span className="font-medium text-purple-800">Bot Station</span>
             </div>
             </div>
 
             <div className="space-y-2">
             <div className="flex items-center gap-3 p-2 bg-red-50 rounded-lg">
-                <div className="w-6 h-6 bg-red-600 rounded flex items-center justify-center text-white font-bold">🚫</div>
+                <div className="w-6 h-6 bg-red-600 rounded flex items-center justify-center text-white">{UI_ICONS.BLOCKED}</div>
                 <span className="font-medium text-red-800">Blocked Path</span>
             </div>
             <div className="text-xs text-gray-600 p-3 bg-amber-50 rounded-lg border border-amber-200">
                 <div className="flex items-center gap-2 mb-1">
-                <span className="text-amber-600">⚠️</span>
+                <div className="text-amber-600">{UI_ICONS.WARNING}</div>
                 <span className="font-bold text-amber-800">IMPORTANT</span>
                 </div>
                 Red barriers show where robots <strong>CANNOT PASS</strong>
@@ -282,7 +277,7 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
         {selectedBot && (
             <div className="mt-4 p-3 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
             <div className="flex items-center gap-2">
-                <span className="text-blue-600">🎯</span>
+                <div className="text-blue-600">{UI_ICONS.TARGET}</div>
                 <span className="text-blue-800 font-medium">Bot #{selectedBot} selected - Click any empty cell to move (pathfinding will avoid blocked paths)</span>
             </div>
             </div>
