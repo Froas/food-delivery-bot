@@ -92,7 +92,7 @@ class BotManager:
         }
     
     def rebalance_orders(self) -> dict:
-        """Redistribute orders among bots for better efficiency"""
+        # Redistribute orders among bots for better efficiency
 
         pending_orders = self.db.query(Order).filter(Order.status == 'PENDING').all()
         
