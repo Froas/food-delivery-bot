@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:17
-    container_name: postgres-db
+    container_name: db-postgres
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -18,10 +18,10 @@ services:
       retries: 12
       start_period: 20s
 
-  backend-api:
+  backend:
     build:
       context: ./backend
-    container_name: backend-api
+    container_name: backend-fastapi
     volumes:
       - ./sample_data.csv:/usr/local/app/sample_data.csv
       - ./BlockedPaths.csv:/usr/local/app/BlockedPaths.csv
@@ -49,9 +49,9 @@ services:
   frontend:
     build:
       context: ./frontend
-    container_name: frontend
+    container_name: frontend-react
     depends_on:
-      backend-api:
+      backend:
         condition: service_healthy
     ports:
       - "5173:5173"
