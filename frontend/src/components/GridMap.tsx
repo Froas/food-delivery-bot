@@ -128,7 +128,6 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             </div>
         </div>
         
-        {/* Enhanced Legend */}
         <div className="mt-8 grid grid-cols-2 gap-4 text-sm">
             <div className="space-y-2">
             <div className="flex items-center gap-3 p-2 bg-blue-50 rounded-lg">

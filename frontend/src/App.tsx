@@ -11,6 +11,7 @@ import SystemStats from './components/SystemStats'
 import OrderForm from './components/OrderForm'
 import GridMap from './components/GridMap'
 import OrderList from './components/OrderList'
+import robotUrl from './assets/svg/robot.svg'
 
 const EagRouteApp: React.FC = () => {
   const [selectedBot, setSelectedBot] = useState<number | null>(null)
@@ -61,7 +62,7 @@ const EagRouteApp: React.FC = () => {
         <div className="text-center">
           <div className="relative mb-8">
             <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto shadow-2xl">
-              <span className="text-3xl text-white">🤖</span>
+              <img src={robotUrl} alt="Robot" className="w-12 h-12" />
             </div>
             <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-25 animate-pulse"></div>
           </div>
@@ -86,11 +87,10 @@ const EagRouteApp: React.FC = () => {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-xl lg:text-2xl">🤖</span>
+                 <img src={robotUrl} alt="Robot" className="w-12 h-12" />
               </div>
               <div>
                 <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">EagRoute</h1>
-                <p className="text-slate-300 text-xs lg:text-sm hidden sm:block">Intelligent Delivery Bot System</p>
               </div>
             </div>
 
@@ -127,23 +127,6 @@ const EagRouteApp: React.FC = () => {
         </div>
       </main>
 
-      {/* FOOTER: same max width & paddings */}
-      <footer className="bg-white border-t border-gray-200 mt-8 lg:mt-12">
-        <div className="mx-auto max-w-7xl px-4 lg:px-6 py-4 lg:py-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span>System Online</span>
-              <span className="hidden sm:inline text-gray-300">•</span>
-              <span className="hidden sm:inline">{orders?.length || 0} Active Orders</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-xs text-gray-400">Last updated: {new Date().toLocaleTimeString()}</div>
-              <div className="font-medium">EagRoute v2.0 - Enhanced Design</div>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
@@ -165,7 +148,7 @@ const queryClient = new QueryClient({
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
     <EagRouteApp />
-    <ReactQueryDevtools initialIsOpen={false} position="bottom" />
+    {/* <ReactQueryDevtools initialIsOpen={false} position="bottom" /> */}
   </QueryClientProvider>
 )
 

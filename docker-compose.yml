@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:17
-    container_name: db
+    container_name: postgres-db
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -21,7 +21,7 @@ services:
   backend-api:
     build:
       context: ./backend
-    container_name: api
+    container_name: backend-api
     volumes:
       - ./sample_data.csv:/usr/local/app/sample_data.csv
       - ./BlockedPaths.csv:/usr/local/app/BlockedPaths.csv
