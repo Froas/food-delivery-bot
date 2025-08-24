@@ -30,6 +30,7 @@ services:
       DB_PORT: 5432
       LOGGING_LEVEL: ${LOGGING_LEVEL:-INFO}
       DATABASE_URL: postgresql+psycopg2://${DB_USER}:${DB_PASS}@db:5432/${DB_NAME}
+      PASS_KEY: ${PASS_KEY} 
     depends_on:
       db:
         condition: service_healthy
