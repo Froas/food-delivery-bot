@@ -1,9 +1,8 @@
-// hooks/useApi.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ApiService } from '../services/api'
 import type { CreateOrderRequest } from '../types'
 
-// Query keys for consistent cache management
+
 export const queryKeys = {
     health: ['health'] as const,
     mapGrid: ['map', 'grid'] as const,
@@ -24,8 +23,8 @@ export const useHealthCheck = () => {
     return useQuery({
         queryKey: queryKeys.health,
         queryFn: ApiService.healthCheck,
-        staleTime: 30000, // 30 seconds
-        refetchInterval: 60000, // 1 minute
+        staleTime: 30000,
+        refetchInterval: 60000, 
     })
 }
 
@@ -34,8 +33,8 @@ export const useMapGrid = () => {
     return useQuery({
         queryKey: queryKeys.mapGrid,
         queryFn: ApiService.getMapGrid,
-        staleTime: 1000, // 1 second
-        refetchInterval: 2000, // 2 seconds for real-time updates
+        staleTime: 1000, 
+        refetchInterval: 2000, 
     })
 }
 
@@ -43,7 +42,7 @@ export const useRestaurants = () => {
     return useQuery({
         queryKey: queryKeys.restaurants,
         queryFn: ApiService.getRestaurants,
-        staleTime: 5 * 60 * 1000, // 5 minutes (restaurants don't change often)
+        staleTime: 5 * 60 * 1000, 
     })
 }
 
@@ -51,7 +50,7 @@ export const useDeliveryPoints = () => {
     return useQuery({
         queryKey: queryKeys.deliveryPoints,
         queryFn: ApiService.getDeliveryPoints,
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: 5 * 60 * 1000, 
     })
 }
 
@@ -59,8 +58,8 @@ export const useSystemStats = () => {
     return useQuery({
         queryKey: queryKeys.systemStats,
         queryFn: ApiService.getSystemStats,
-        staleTime: 2000, // 2 seconds
-        refetchInterval: 5000, // 5 seconds
+        staleTime: 2000, 
+        refetchInterval: 5000, 
     })
 }
 
@@ -69,8 +68,8 @@ export const useBots = () => {
     return useQuery({
         queryKey: queryKeys.bots,
         queryFn: ApiService.getAllBots,
-        staleTime: 1000, // 1 second
-        refetchInterval: 3000, // 3 seconds
+        staleTime: 1000, 
+        refetchInterval: 3000, 
     })
 }
 
@@ -106,8 +105,8 @@ export const useOrders = () => {
     return useQuery({
         queryKey: queryKeys.orders,
         queryFn: ApiService.getAllOrders,
-        staleTime: 1000, // 1 second
-        refetchInterval: 2000, // 2 seconds for real-time updates
+        staleTime: 1000,
+        refetchInterval: 2000, 
     })
 }
 
@@ -136,7 +135,7 @@ export const useCreateOrder = () => {
     return useMutation({
         mutationFn: (orderData: CreateOrderRequest) => ApiService.createOrder(orderData),
         onSuccess: () => {
-        // Invalidate and refetch related queries
+
         queryClient.invalidateQueries({ queryKey: queryKeys.orders })
         queryClient.invalidateQueries({ queryKey: queryKeys.mapGrid })
         queryClient.invalidateQueries({ queryKey: queryKeys.systemStats })
@@ -155,11 +154,11 @@ export const useMoveBot = () => {
         mutationFn: ({ botId, x, y }: { botId: number ; x: number ; y: number }) => 
         ApiService.moveBot(botId, x, y),
         onSuccess: (data, variables) => {
-        // Invalidate related queries
         queryClient.invalidateQueries({ queryKey: queryKeys.bots })
         queryClient.invalidateQueries({ queryKey: queryKeys.bot(variables.botId) })
         queryClient.invalidateQueries({ queryKey: queryKeys.mapGrid })
         queryClient.invalidateQueries({ queryKey: queryKeys.orders })
+        console.log('useMoveBot data: ', data)
         },
         onError: (error) => {
         console.error('Failed to move bot:', error)
@@ -174,11 +173,11 @@ export const useUpdateOrderStatus = () => {
         mutationFn: ({ orderId, status }: { orderId: number ; status: string }) => 
         ApiService.updateOrderStatus(orderId, status),
         onSuccess: (data, variables) => {
-        // Invalidate related queries
         queryClient.invalidateQueries({ queryKey: queryKeys.orders })
         queryClient.invalidateQueries({ queryKey: queryKeys.order(variables.orderId) })
         queryClient.invalidateQueries({ queryKey: queryKeys.mapGrid })
         queryClient.invalidateQueries({ queryKey: queryKeys.systemStats })
+        console.log('useUpdateOrderStatus data: ', data)
         },
     })
 }
@@ -189,12 +188,12 @@ export const useCancelOrder = () => {
     return useMutation({
         mutationFn: (orderId: number) => ApiService.cancelOrder(orderId),
         onSuccess: (data, orderId) => {
-        // Invalidate related queries
         queryClient.invalidateQueries({ queryKey: queryKeys.orders })
         queryClient.invalidateQueries({ queryKey: queryKeys.order(orderId) })
         queryClient.invalidateQueries({ queryKey: queryKeys.mapGrid })
         queryClient.invalidateQueries({ queryKey: queryKeys.systemStats })
         queryClient.invalidateQueries({ queryKey: queryKeys.bots })
+        console.log('useCancelOrder data: ', data)
         },
     })
 }
@@ -205,7 +204,6 @@ export const useRebalanceOrders = () => {
     return useMutation({
         mutationFn: ApiService.rebalanceOrders,
         onSuccess: () => {
-        // Invalidate all order and bot related queries
         queryClient.invalidateQueries({ queryKey: queryKeys.orders })
         queryClient.invalidateQueries({ queryKey: queryKeys.bots })
         queryClient.invalidateQueries({ queryKey: queryKeys.mapGrid })
