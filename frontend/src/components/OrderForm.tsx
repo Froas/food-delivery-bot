@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import type { Restaurant, DeliveryPoint, CreateOrderRequest } from '../types';
-import type { UseMutationResult } from '@tanstack/react-query';
+import React, { useState } from 'react'
+import type { Restaurant, DeliveryPoint, CreateOrderRequest } from '../types'
+import type { UseMutationResult } from '@tanstack/react-query'
 
 interface OrderFormProps {
-    restaurants: Restaurant[];
-    deliveryPoints: DeliveryPoint[];
-    onOrderCreated: () => void;
-    createOrderMutation: UseMutationResult<any, Error, CreateOrderRequest, unknown>;
+    restaurants: Restaurant[]
+    deliveryPoints: DeliveryPoint[]
+    onOrderCreated: () => void
+    createOrderMutation: UseMutationResult<any, Error, CreateOrderRequest, unknown>
 }
 
 const OrderForm: React.FC<OrderFormProps> = ({ 
@@ -23,16 +23,16 @@ const OrderForm: React.FC<OrderFormProps> = ({
         pickup_y: 0,
         delivery_x: 0,
         delivery_y: 0
-    });
-    const [error, setError] = useState('');
+    })
+    const [error, setError] = useState('')
 
     const handleSubmit = async () => {
         if (!formData.customer_name || !formData.restaurant_type || !formData.delivery_x) {
-        setError('Please fill in all required fields');
-        return;
+        setError('Please fill in all required fields')
+        return
         }
 
-        setError('');
+        setError('')
         
         try {
         await createOrderMutation.mutateAsync({
@@ -43,7 +43,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
             pickup_y: formData.pickup_y,
             delivery_x: formData.delivery_x,
             delivery_y: formData.delivery_y
-        });
+        })
         
         setFormData({
             customer_name: '',
@@ -53,31 +53,31 @@ const OrderForm: React.FC<OrderFormProps> = ({
             pickup_y: 0,
             delivery_x: 0,
             delivery_y: 0
-        });
-        onOrderCreated();
+        })
+        onOrderCreated()
         } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to create order');
+        setError(err instanceof Error ? err.message : 'Failed to create order')
         }
-    };
+    }
 
     const handleRestaurantChange = (restaurantType: string) => {
-        const restaurant = restaurants.find(r => r.restaurant_type === restaurantType);
+        const restaurant = restaurants.find(r => r.restaurant_type === restaurantType)
         if (restaurant) {
         setFormData(prev => ({
             ...prev,
             restaurant_type: restaurantType as 'RAMEN' | 'CURRY' | 'PIZZA' | 'SUSHI',
             pickup_x: restaurant.x,
             pickup_y: restaurant.y
-        }));
+        }))
         }
-    };
+    }
 
     const restaurantIcons: Record<string, string> = {
         RAMEN: '🍜',
         PIZZA: '🍕', 
         CURRY: '🍛',
         SUSHI: '🍣'
-    };
+    }
 
     return (
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
@@ -154,10 +154,10 @@ const OrderForm: React.FC<OrderFormProps> = ({
             <select
                 value={`${formData.delivery_x},${formData.delivery_y}`}
                 onChange={(e) => {
-                const [xStr, yStr] = e.target.value.split(',');
-                const x = Number(xStr);
-                const y = Number(yStr);
-                setFormData(prev => ({...prev, delivery_x: x, delivery_y: y}));
+                const [xStr, yStr] = e.target.value.split(',')
+                const x = Number(xStr)
+                const y = Number(yStr)
+                setFormData(prev => ({...prev, delivery_x: x, delivery_y: y}))
                 }}
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all group-hover:border-gray-300"
                 required
@@ -196,7 +196,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
             </button>
         </div>
         </div>
-    );
-};
+    )
+}
 
-export default OrderForm;
+export default OrderForm

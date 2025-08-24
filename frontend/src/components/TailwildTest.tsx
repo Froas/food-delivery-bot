@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 /**
  * Tailwind Sanity Test Component
@@ -36,7 +36,7 @@ const TailwindTest: React.FC = () => {
         w-[150px] h-[75px] bg-[magenta]
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TailwindTest;
+export default TailwindTest

@@ -1,39 +1,39 @@
-import React, { useState } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import React, { useState } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 // hooks
-import { useMapGrid, useOrders, useRestaurants, useDeliveryPoints, useCreateOrder, useMoveBot } from './hooks/userApi';
-import type { GridCell } from './types';
+import { useMapGrid, useOrders, useRestaurants, useDeliveryPoints, useCreateOrder, useMoveBot } from './hooks/userApi'
+import type { GridCell } from './types'
 
 // components
-import SystemStats from './components/SystemStats';
-import OrderForm from './components/OrderForm';
-import GridMap from './components/GridMap';
-import OrderList from './components/OrderList';
+import SystemStats from './components/SystemStats'
+import OrderForm from './components/OrderForm'
+import GridMap from './components/GridMap'
+import OrderList from './components/OrderList'
 
 const EagRouteApp: React.FC = () => {
-  const [selectedBot, setSelectedBot] = useState<number | null>(null);
+  const [selectedBot, setSelectedBot] = useState<number | null>(null)
 
-  const { data: gridData, isLoading: gridLoading, error: gridError } = useMapGrid();
-  const { data: orders, isLoading: ordersLoading } = useOrders();
-  const { data: restaurants } = useRestaurants();
-  const { data: deliveryPoints } = useDeliveryPoints();
-  const createOrderMutation = useCreateOrder();
-  const moveBotMutation = useMoveBot();
+  const { data: gridData, isLoading: gridLoading, error: gridError } = useMapGrid()
+  const { data: orders, isLoading: ordersLoading } = useOrders()
+  const { data: restaurants } = useRestaurants()
+  const { data: deliveryPoints } = useDeliveryPoints()
+  const createOrderMutation = useCreateOrder()
+  const moveBotMutation = useMoveBot()
 
   const handleCellClick = async (x: number, y: number, cell: GridCell) => {
     if (selectedBot != null && cell.bots.length === 0) {
       try {
-        await moveBotMutation.mutateAsync({ botId: selectedBot, x, y });
-        setSelectedBot(null);
+        await moveBotMutation.mutateAsync({ botId: selectedBot, x, y })
+        setSelectedBot(null)
       } catch (error) {
-        console.error('Error moving bot:', error);
+        console.error('Error moving bot:', error)
       }
     } else if (cell.bots && cell.bots.length > 0) {
-      setSelectedBot(cell.bots[0]!.id);
+      setSelectedBot(cell.bots[0]!.id)
     }
-  };
+  }
 
   if (gridError) {
     return (
@@ -52,7 +52,7 @@ const EagRouteApp: React.FC = () => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (gridLoading || ordersLoading) {
@@ -75,7 +75,7 @@ const EagRouteApp: React.FC = () => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -145,8 +145,8 @@ const EagRouteApp: React.FC = () => {
         </div>
       </footer>
     </div>
-  );
-};
+  )
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -160,13 +160,13 @@ const queryClient = new QueryClient({
     },
     mutations: { retry: 1, retryDelay: 1000 },
   },
-});
+})
 
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
     <EagRouteApp />
     <ReactQueryDevtools initialIsOpen={false} position="bottom" />
   </QueryClientProvider>
-);
+)
 
-export default App;
+export default App

@@ -1,116 +1,116 @@
-import React, { useState } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { Bot, Package, MapPin, Activity, AlertTriangle } from 'lucide-react';
-import clsx from 'clsx';
+import React, { useState } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { Bot, Package, MapPin, Activity, AlertTriangle } from 'lucide-react'
+import clsx from 'clsx'
 
 // Types
 interface Bot {
-    id: number;
-    name: string;
-    current_x: number;
-    current_y: number;
-    max_capacity: number;
-    status: 'IDLE' | 'BUSY' | 'MAINTENANCE';
-    current_orders: number;
-    battery_level: number;
-    created_at: string;
-    updated_at: string;
+    id: number
+    name: string
+    current_x: number
+    current_y: number
+    max_capacity: number
+    status: 'IDLE' | 'BUSY' | 'MAINTENANCE'
+    current_orders: number
+    battery_level: number
+    created_at: string
+    updated_at: string
 }
 
 interface Order {           
-    id: number;
-    customer_name: string;
-    customer_phone: string | null;
-    restaurant_type: 'RAMEN' | 'CURRY' | 'PIZZA' | 'SUSHI';
-    pickup_x: number;
-    pickup_y: number;
-    delivery_x: number;
-    delivery_y: number;
-    status: 'PENDING' | 'ASSIGNED' | 'PICKED_UP' | 'DELIVERED' | 'CANCELLED';
-    bot_id: number | null;
-    priority: number;
-    estimated_distance: number | null;
-    estimated_time: number | null;
-    created_at: string;
-    updated_at: string;
+    id: number
+    customer_name: string
+    customer_phone: string | null
+    restaurant_type: 'RAMEN' | 'CURRY' | 'PIZZA' | 'SUSHI'
+    pickup_x: number
+    pickup_y: number
+    delivery_x: number
+    delivery_y: number
+    status: 'PENDING' | 'ASSIGNED' | 'PICKED_UP' | 'DELIVERED' | 'CANCELLED'
+    bot_id: number | null
+    priority: number
+    estimated_distance: number | null
+    estimated_time: number | null
+    created_at: string
+    updated_at: string
 }
 
 interface Restaurant {
-    id: number;
-    x: number;
-    y: number;
-    restaurant_type: 'RAMEN' | 'CURRY' | 'PIZZA' | 'SUSHI';
-    name: string;
+    id: number
+    x: number
+    y: number
+    restaurant_type: 'RAMEN' | 'CURRY' | 'PIZZA' | 'SUSHI'
+    name: string
 }
 
 interface DeliveryPoint {
-    id: number;
-    x: number;
-    y: number;
-    name: string;
+    id: number
+    x: number
+    y: number
+    name: string
 }
 
 interface GridCell {
-  x: number;
-  y: number;
-  node_type: 'NODE' | 'HOUSE' | 'RESTAURANT' | 'BOT_STATION';
-  is_delivery_point: boolean;
-  is_restaurant: boolean;
-  is_bot_station: boolean;
-  restaurant_type: string | null;
-  name: string;
+  x: number
+  y: number
+  node_type: 'NODE' | 'HOUSE' | 'RESTAURANT' | 'BOT_STATION'
+  is_delivery_point: boolean
+  is_restaurant: boolean
+  is_bot_station: boolean
+  restaurant_type: string | null
+  name: string
   bots: Array<{
-    id: number;
-    name: string;
-    status: string;
-    current_orders: number;
-    battery_level: number;
-  }>;
+    id: number
+    name: string
+    status: string
+    current_orders: number
+    battery_level: number
+  }>
   active_orders: Array<{
-    id: number;
-    customer_name: string;
-    restaurant_type: string;
-    status: string;
-    bot_id: number | null;
-    location_type: 'pickup' | 'delivery';
-  }>;
+    id: number
+    customer_name: string
+    restaurant_type: string
+    status: string
+    bot_id: number | null
+    location_type: 'pickup' | 'delivery'
+  }>
 }
 
 interface MapGrid {
-  grid: Record<string, GridCell>;
-  grid_size: number;
-  total_nodes: number;
-  total_bots: number;
-  active_orders: number;
+  grid: Record<string, GridCell>
+  grid_size: number
+  total_nodes: number
+  total_bots: number
+  active_orders: number
 }
 
 // API Service (simplified for demo)
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'http://localhost:8000'
 
 const apiService = {
   async getMapGrid(): Promise<MapGrid> {
-    const response = await fetch(`${API_BASE_URL}/api/v1/map/grid`);
-    if (!response.ok) throw new Error('Failed to fetch map grid');
-return (await response.json()) as MapGrid;
+    const response = await fetch(`${API_BASE_URL}/api/v1/map/grid`)
+    if (!response.ok) throw new Error('Failed to fetch map grid')
+return (await response.json()) as MapGrid
   },
   
   async getAllOrders(): Promise<Order[]> {
-    const response = await fetch(`${API_BASE_URL}/api/v1/orders/`);
-    if (!response.ok) throw new Error('Failed to fetch orders');
-    return response.json();
+    const response = await fetch(`${API_BASE_URL}/api/v1/orders/`)
+    if (!response.ok) throw new Error('Failed to fetch orders')
+    return response.json()
   },
   
   async getRestaurants(): Promise<Restaurant[]> {
-    const response = await fetch(`${API_BASE_URL}/api/v1/map/restaurants`);
-    if (!response.ok) throw new Error('Failed to fetch restaurants');
-    return response.json();
+    const response = await fetch(`${API_BASE_URL}/api/v1/map/restaurants`)
+    if (!response.ok) throw new Error('Failed to fetch restaurants')
+    return response.json()
   },
   
   async getDeliveryPoints(): Promise<DeliveryPoint[]> {
-    const response = await fetch(`${API_BASE_URL}/api/v1/map/delivery-points`);
-    if (!response.ok) throw new Error('Failed to fetch delivery points');
-    return response.json();
+    const response = await fetch(`${API_BASE_URL}/api/v1/map/delivery-points`)
+    if (!response.ok) throw new Error('Failed to fetch delivery points')
+    return response.json()
   },
   
   async createOrder(orderData: any): Promise<Order> {
@@ -118,97 +118,97 @@ return (await response.json()) as MapGrid;
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(orderData)
-    });
+    })
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || 'Failed to create order');
+      const error = await response.json()
+      throw new Error(error.detail || 'Failed to create order')
     }
-    return response.json();
+    return response.json()
   },
   
   async moveBot(botId: number, x: number, y: number) {
     const response = await fetch(`${API_BASE_URL}/api/v1/bots/${botId}/move?x=${x}&y=${y}`, {
       method: 'POST'
-    });
-    if (!response.ok) throw new Error('Failed to move bot');
-    return response.json();
+    })
+    if (!response.ok) throw new Error('Failed to move bot')
+    return response.json()
   }
-};
+}
 
 // Custom hooks with React Query
 const useMapGrid = () => {
-  const [data, setData] = React.useState<MapGrid | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const [data, setData] = React.useState<MapGrid | null>(null)
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await apiService.getMapGrid();
-        setData(result);
-        setError(null);
+        const result = await apiService.getMapGrid()
+        setData(result)
+        setError(null)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        setError(err instanceof Error ? err.message : 'Unknown error')
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchData();
-    const interval = setInterval(fetchData, 2000);
-    return () => clearInterval(interval);
-  }, []);
+    fetchData()
+    const interval = setInterval(fetchData, 2000)
+    return () => clearInterval(interval)
+  }, [])
 
-  return { data, isLoading, error };
-};
+  return { data, isLoading, error }
+}
 
 const useOrders = () => {
-  const [data, setData] = React.useState<Order[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [data, setData] = React.useState<Order[]>([])
+  const [isLoading, setIsLoading] = React.useState(true)
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await apiService.getAllOrders();
-        setData(result);
+        const result = await apiService.getAllOrders()
+        setData(result)
       } catch (err) {
-        console.error('Failed to fetch orders:', err);
+        console.error('Failed to fetch orders:', err)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchData();
-    const interval = setInterval(fetchData, 2000);
-    return () => clearInterval(interval);
-  }, []);
+    fetchData()
+    const interval = setInterval(fetchData, 2000)
+    return () => clearInterval(interval)
+  }, [])
 
-  return { data, isLoading };
-};
+  return { data, isLoading }
+}
 
 const useRestaurants = () => {
-  const [data, setData] = React.useState<Restaurant[]>([]);
+  const [data, setData] = React.useState<Restaurant[]>([])
 
   React.useEffect(() => {
-    apiService.getRestaurants().then(setData).catch(console.error);
-  }, []);
+    apiService.getRestaurants().then(setData).catch(console.error)
+  }, [])
 
-  return { data };
-};
+  return { data }
+}
 
 const useDeliveryPoints = () => {
-  const [data, setData] = React.useState<DeliveryPoint[]>([]);
+  const [data, setData] = React.useState<DeliveryPoint[]>([])
 
   React.useEffect(() => {
-    apiService.getDeliveryPoints().then(setData).catch(console.error);
-  }, []);
+    apiService.getDeliveryPoints().then(setData).catch(console.error)
+  }, [])
 
-  return { data };
-};
+  return { data }
+}
 
 // Components
 const SystemStats: React.FC<{ gridData: MapGrid | null; orders: Order[] }> = ({ gridData, orders }) => {
-  if (!gridData) return null;
+  if (!gridData) return null
 
   const stats = {
     totalBots: gridData.total_bots,
@@ -218,7 +218,7 @@ const SystemStats: React.FC<{ gridData: MapGrid | null; orders: Order[] }> = ({ 
     pendingOrders: orders.filter(o => o.status === 'PENDING').length,
     activeOrders: orders.filter(o => ['ASSIGNED', 'PICKED_UP'].includes(o.status)).length,
     deliveredOrders: orders.filter(o => o.status === 'DELIVERED').length
-  };
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -245,13 +245,13 @@ const SystemStats: React.FC<{ gridData: MapGrid | null; orders: Order[] }> = ({ 
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const OrderForm: React.FC<{
-  restaurants: Restaurant[];
-  deliveryPoints: DeliveryPoint[];
-  onOrderCreated: () => void;
+  restaurants: Restaurant[]
+  deliveryPoints: DeliveryPoint[]
+  onOrderCreated: () => void
 }> = ({ restaurants, deliveryPoints, onOrderCreated }) => {
   const [formData, setFormData] = useState({
     customer_name: '',
@@ -261,21 +261,21 @@ const OrderForm: React.FC<{
     pickup_y: 0,
     delivery_x: 0,
     delivery_y: 0
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async () => {
     if (!formData.customer_name || !formData.restaurant_type || !formData.delivery_x) {
-      setError('Please fill in all required fields');
-      return;
+      setError('Please fill in all required fields')
+      return
     }
 
-    setIsSubmitting(true);
-    setError('');
+    setIsSubmitting(true)
+    setError('')
     
     try {
-      await apiService.createOrder(formData);
+      await apiService.createOrder(formData)
       setFormData({
         customer_name: '',
         customer_phone: '',
@@ -284,26 +284,26 @@ const OrderForm: React.FC<{
         pickup_y: 0,
         delivery_x: 0,
         delivery_y: 0
-      });
-      onOrderCreated();
+      })
+      onOrderCreated()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create order');
+      setError(err instanceof Error ? err.message : 'Failed to create order')
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   const handleRestaurantChange = (restaurantType: string) => {
-    const restaurant = restaurants.find(r => r.restaurant_type === restaurantType);
+    const restaurant = restaurants.find(r => r.restaurant_type === restaurantType)
     if (restaurant) {
       setFormData(prev => ({
         ...prev,
         restaurant_type: restaurantType as 'RAMEN' | 'CURRY' | 'PIZZA' | 'SUSHI',
         pickup_x: restaurant.x,
         pickup_y: restaurant.y
-      }));
+      }))
     }
-  };
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -373,10 +373,10 @@ const OrderForm: React.FC<{
           <select
             value={`${formData.delivery_x},${formData.delivery_y}`}
             onChange={(e) => {
-              const [xStr, yStr] = e.target.value.split(',');
-              const x = Number(xStr);
-              const y = Number(yStr);
-              setFormData(prev => ({...prev, delivery_x: x, delivery_y: y}));
+              const [xStr, yStr] = e.target.value.split(',')
+              const x = Number(xStr)
+              const y = Number(yStr)
+              setFormData(prev => ({...prev, delivery_x: x, delivery_y: y}))
             }}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -403,13 +403,13 @@ const OrderForm: React.FC<{
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const GridMap: React.FC<{
-  gridData: MapGrid | null;
-  selectedBot: number | null;
-  onCellClick: (x: number, y: number, cell: GridCell) => void;
+  gridData: MapGrid | null
+  selectedBot: number | null
+  onCellClick: (x: number, y: number, cell: GridCell) => void
 }> = ({ gridData, selectedBot, onCellClick }) => {
   if (!gridData) {
     return (
@@ -419,42 +419,42 @@ const GridMap: React.FC<{
           <span className="ml-2 text-gray-600">Loading map...</span>
         </div>
       </div>
-    );
+    )
   }
 
   const renderCell = (x: number, y: number) => {
-    const cellKey = `${x},${y}`;
-    const cell = gridData.grid[cellKey];
-    if (!cell) return null;
+    const cellKey = `${x},${y}`
+    const cell = gridData.grid[cellKey]
+    if (!cell) return null
 
-    let cellClasses = 'w-10 h-10 border border-gray-300 flex flex-col items-center justify-center cursor-pointer transition-all hover:scale-105 text-xs';
-    let cellContent = '';
-    let bgColor = 'bg-gray-50';
+    let cellClasses = 'w-10 h-10 border border-gray-300 flex flex-col items-center justify-center cursor-pointer transition-all hover:scale-105 text-xs'
+    let cellContent = ''
+    let bgColor = 'bg-gray-50'
     
     // Determine cell type and styling
     if (cell.is_restaurant) {
-      bgColor = 'bg-yellow-200';
-      cellContent = cell.restaurant_type?.[0] || 'R';
+      bgColor = 'bg-yellow-200'
+      cellContent = cell.restaurant_type?.[0] || 'R'
     } else if (cell.is_delivery_point) {
-      bgColor = 'bg-green-200';
-      cellContent = '🏠';
+      bgColor = 'bg-green-200'
+      cellContent = '🏠'
     } else if (cell.is_bot_station) {
-      bgColor = 'bg-purple-200';
-      cellContent = '⚡';
+      bgColor = 'bg-purple-200'
+      cellContent = '⚡'
     }
 
     // Add bots if present
     if (cell.bots && cell.bots.length > 0) {
-      bgColor = 'bg-blue-400';
-      cellContent = `🤖${cell.bots[0]?.id}`;
+      bgColor = 'bg-blue-400'
+      cellContent = `🤖${cell.bots[0]?.id}`
       if (selectedBot === cell.bots[0]?.id) {
-        cellClasses += ' ring-4 ring-red-400';
+        cellClasses += ' ring-4 ring-red-400'
       }
     }
 
     // Add orders if present
     if (cell.active_orders && cell.active_orders.length > 0) {
-      cellClasses += ' ring-2 ring-orange-400';
+      cellClasses += ' ring-2 ring-orange-400'
     }
 
     return (
@@ -467,8 +467,8 @@ const GridMap: React.FC<{
         <div className="font-bold">{cellContent}</div>
         <div className="text-xs text-gray-600">{x},{y}</div>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -506,20 +506,20 @@ const GridMap: React.FC<{
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'PENDING': return 'text-orange-600 bg-orange-100';
-      case 'ASSIGNED': return 'text-blue-600 bg-blue-100';
-      case 'PICKED_UP': return 'text-green-600 bg-green-100';
-      case 'DELIVERED': return 'text-emerald-600 bg-emerald-100';
-      case 'CANCELLED': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'PENDING': return 'text-orange-600 bg-orange-100'
+      case 'ASSIGNED': return 'text-blue-600 bg-blue-100'
+      case 'PICKED_UP': return 'text-green-600 bg-green-100'
+      case 'DELIVERED': return 'text-emerald-600 bg-emerald-100'
+      case 'CANCELLED': return 'text-red-600 bg-red-100'
+      default: return 'text-gray-600 bg-gray-100'
     }
-  };
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -555,32 +555,32 @@ const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 const EagRouteApp: React.FC = () => {
-  const [selectedBot, setSelectedBot] = useState<number | null>(null);
-  const { data: gridData, isLoading: gridLoading, error: gridError } = useMapGrid();
-  const { data: orders, isLoading: ordersLoading } = useOrders();
-  const { data: restaurants } = useRestaurants();
-  const { data: deliveryPoints } = useDeliveryPoints();
+  const [selectedBot, setSelectedBot] = useState<number | null>(null)
+  const { data: gridData, isLoading: gridLoading, error: gridError } = useMapGrid()
+  const { data: orders, isLoading: ordersLoading } = useOrders()
+  const { data: restaurants } = useRestaurants()
+  const { data: deliveryPoints } = useDeliveryPoints()
 
   const handleCellClick = async (x: number, y: number, cell: GridCell) => {
     if (selectedBot != null && cell.bots.length === 0) {
       try {
-        await apiService.moveBot(selectedBot, x, y);
-        setSelectedBot(null);
+        await apiService.moveBot(selectedBot, x, y)
+        setSelectedBot(null)
       } catch (error) {
-        console.error('Error moving bot:', error);
+        console.error('Error moving bot:', error)
       }
     } else if (cell.bots && cell.bots.length > 0) {
-      setSelectedBot(cell.bots[0]!.id);
+      setSelectedBot(cell.bots[0]!.id)
     }
-  };
+  }
 
   const handleOrderCreated = () => {
     // Orders will auto-refresh via polling
-  };
+  }
 
   if (gridError) {
     return (
@@ -594,7 +594,7 @@ const EagRouteApp: React.FC = () => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -643,8 +643,8 @@ const EagRouteApp: React.FC = () => {
         </div>
       </main>
     </div>
-  );
-};
+  )
+}
 
 // Create QueryClient
 const queryClient = new QueryClient({
@@ -655,7 +655,7 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
     },
   },
-});
+})
 
 // Main App with Providers
 const App: React.FC = () => {
@@ -664,7 +664,7 @@ const App: React.FC = () => {
       <EagRouteApp />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
-  );
-};
+  )
+}
 
-export default App;
+export default App

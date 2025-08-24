@@ -56,65 +56,65 @@ export interface DeliveryPoint {
 
 export interface BlockedPath {
     from: {
-        x: number;
-        y: number;
-        id: number;
-    };
+        x: number
+        y: number
+        id: number
+    }
     to: {
-        x: number;
-        y: number;
-        id: number;
-    };
-    created_at: string;
+        x: number
+        y: number
+        id: number
+    }
+    created_at: string
 }
 
 export interface BlockedSegment {
-    from_x: number;
-    from_y: number;
-    to_x: number;
-    to_y: number;
-    direction: 'right' | 'left' | 'down' | 'up' | 'diagonal';
+    from_x: number
+    from_y: number
+    to_x: number
+    to_y: number
+    direction: 'right' | 'left' | 'down' | 'up' | 'diagonal'
 }
 
 export interface BlockedPathsResponse {
-    blocked_paths: BlockedPath[];
-    total_blocked: number;
+    blocked_paths: BlockedPath[]
+    total_blocked: number
     visualization_data: {
-        blocked_segments: BlockedSegment[];
-    };
+        blocked_segments: BlockedSegment[]
+    }
 }
 
 export interface GridCell {
-    x: number;
-    y: number;
-    node_type: 'NODE' | 'HOUSE' | 'RESTAURANT' | 'BOT_STATION';
-    is_delivery_point: boolean;
-    is_restaurant: boolean;
-    is_bot_station: boolean;
-    restaurant_type: string | null;
-    name: string;
+    x: number
+    y: number
+    node_type: 'NODE' | 'HOUSE' | 'RESTAURANT' | 'BOT_STATION'
+    is_delivery_point: boolean
+    is_restaurant: boolean
+    is_bot_station: boolean
+    restaurant_type: string | null
+    name: string
     bots: Array<{
-        id: number;
-        name: string;
-        status: string;
-        current_orders: number;
-        battery_level: number;
-    }>;
+        id: number
+        name: string
+        status: string
+        current_orders: number
+        battery_level: number
+    }>
     active_orders: Array<{
-        id: number;
-        customer_name: string;
-        restaurant_type: string;
-        status: string;
-        bot_id: number | null;
-        location_type: 'pickup' | 'delivery';
-    }>;
+        id: number
+        customer_name: string
+        restaurant_type: string
+        status: string
+        bot_id: number | null
+        location_type: 'pickup' | 'delivery'
+    }>
     // NEW: Blocked path information
     blocked_paths?: {
-        right?: boolean;
-        left?: boolean;
-        down?: boolean;
-        up?: boolean;
-    };
+        right?: boolean
+        left?: boolean
+        down?: boolean
+        up?: boolean
+    }
 }
 
 export interface MapGrid {

@@ -1,10 +1,10 @@
-import React from 'react';
-import type { MapGrid, GridCell } from '../types';
+import React from 'react'
+import type { MapGrid, GridCell } from '../types'
 
 interface GridMapProps {
-    gridData: MapGrid | null;
-    selectedBot: number | null;
-    onCellClick: (x: number, y: number, cell: GridCell) => void;
+    gridData: MapGrid | null
+    selectedBot: number | null
+    onCellClick: (x: number, y: number, cell: GridCell) => void
 }
 
 const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick }) => {
@@ -18,18 +18,18 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             </div>
             </div>
         </div>
-        );
+        )
     }
 
     const renderCell = (x: number, y: number) => {
-        const cellKey = `${x},${y}`;
-        const cell = gridData.grid[cellKey];
-        if (!cell) return null;
+        const cellKey = `${x},${y}`
+        const cell = gridData.grid[cellKey]
+        if (!cell) return null
 
-        let cellClasses = 'w-12 h-12 border-2 border-gray-300 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 hover:z-10 relative group text-xs font-bold';
-        let cellContent = '';
-        let bgColor = 'bg-gray-50 hover:bg-blue-100 hover:border-blue-400';
-        let shadowClass = 'hover:shadow-lg';
+        let cellClasses = 'w-12 h-12 border-2 border-gray-300 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 hover:z-10 relative group text-xs font-bold'
+        let cellContent = ''
+        let bgColor = 'bg-gray-50 hover:bg-blue-100 hover:border-blue-400'
+        let shadowClass = 'hover:shadow-lg'
         
         // Enhanced cell styling
         if (cell.is_restaurant) {
@@ -38,36 +38,36 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             PIZZA: '🍕', 
             CURRY: '🍛',
             SUSHI: '🍣'
-        };
-        bgColor = 'bg-gradient-to-br from-yellow-200 to-orange-300 hover:from-yellow-300 hover:to-orange-400 border-yellow-400';
-        cellContent = restaurantIcons[cell.restaurant_type || ''] || cell.restaurant_type?.[0] || 'R';
-        shadowClass = 'shadow-md hover:shadow-xl';
+        }
+        bgColor = 'bg-gradient-to-br from-yellow-200 to-orange-300 hover:from-yellow-300 hover:to-orange-400 border-yellow-400'
+        cellContent = restaurantIcons[cell.restaurant_type || ''] || cell.restaurant_type?.[0] || 'R'
+        shadowClass = 'shadow-md hover:shadow-xl'
         } else if (cell.is_delivery_point) {
-        bgColor = 'bg-gradient-to-br from-green-200 to-emerald-300 hover:from-green-300 hover:to-emerald-400 border-green-400';
-        cellContent = '🏠';
-        shadowClass = 'shadow-md hover:shadow-xl';
+        bgColor = 'bg-gradient-to-br from-green-200 to-emerald-300 hover:from-green-300 hover:to-emerald-400 border-green-400'
+        cellContent = '🏠'
+        shadowClass = 'shadow-md hover:shadow-xl'
         } else if (cell.is_bot_station) {
-        bgColor = 'bg-gradient-to-br from-purple-200 to-violet-300 hover:from-purple-300 hover:to-violet-400 border-purple-400';
-        cellContent = '⚡';
-        shadowClass = 'shadow-md hover:shadow-xl';
+        bgColor = 'bg-gradient-to-br from-purple-200 to-violet-300 hover:from-purple-300 hover:to-violet-400 border-purple-400'
+        cellContent = '⚡'
+        shadowClass = 'shadow-md hover:shadow-xl'
         }
 
         // Bot styling with enhanced effects
         if (cell.bots && cell.bots.length > 0) {
-        const bot = cell.bots[0];
-        bgColor = 'bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 border-blue-500 animate-pulse';
-        cellContent = `🤖`;
-        shadowClass = 'shadow-lg hover:shadow-2xl';
+        const bot = cell.bots[0]
+        bgColor = 'bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 border-blue-500 animate-pulse'
+        cellContent = `🤖`
+        shadowClass = 'shadow-lg hover:shadow-2xl'
         
         if (selectedBot === bot?.id) {
-            cellClasses += ' ring-4 ring-red-400 ring-opacity-75 scale-110 z-20';
-            bgColor += ' ring-red-400';
+            cellClasses += ' ring-4 ring-red-400 ring-opacity-75 scale-110 z-20'
+            bgColor += ' ring-red-400'
         }
         }
 
         // Order indicators
         if (cell.active_orders && cell.active_orders.length > 0) {
-        cellClasses += ' ring-2 ring-orange-500 ring-opacity-60';
+        cellClasses += ' ring-2 ring-orange-500 ring-opacity-60'
         }
 
         return (
@@ -88,8 +88,8 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             )}
             </div>
         </div>
-        );
-    };
+        )
+    }
 
     return (
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
@@ -161,7 +161,7 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             </div>
         )}
         </div>
-    );
-};
+    )
+}
 
-export default GridMap;
+export default GridMap

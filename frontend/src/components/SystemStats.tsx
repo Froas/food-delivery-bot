@@ -1,15 +1,15 @@
-import React from 'react';
-import type { MapGrid, Order } from '../types';
-import { useBots } from '../hooks/userApi';
+import React from 'react'
+import type { MapGrid, Order } from '../types'
+import { useBots } from '../hooks/userApi'
 
 interface SystemStatsProps {
-    gridData: MapGrid | null;
-    orders: Order[];
+    gridData: MapGrid | null
+    orders: Order[]
 }
 
 const SystemStats: React.FC<SystemStatsProps> = ({ gridData, orders }) => {
-    if (!gridData) return null;
-    const bots = useBots();
+    if (!gridData) return null
+    const bots = useBots()
 
 
     const stats = {
@@ -19,7 +19,7 @@ const SystemStats: React.FC<SystemStatsProps> = ({ gridData, orders }) => {
         pendingOrders: orders.filter(o => o.status === 'PENDING').length,
         activeOrders: orders.filter(o => ['ASSIGNED', 'PICKED_UP'].includes(o.status)).length,
         deliveredOrders: orders.filter(o => o.status === 'DELIVERED').length
-    };
+    }
 
     const statCards = [
         {
@@ -56,7 +56,7 @@ const SystemStats: React.FC<SystemStatsProps> = ({ gridData, orders }) => {
         textColor: 'text-purple-100',
         bgAccent: 'bg-purple-500/10'
         }
-    ];
+    ]
 
     return (
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-6">
@@ -104,7 +104,7 @@ const SystemStats: React.FC<SystemStatsProps> = ({ gridData, orders }) => {
             ))}
         </div>
         </div>
-    );
-};
+    )
+}
 
-export default SystemStats;
+export default SystemStats

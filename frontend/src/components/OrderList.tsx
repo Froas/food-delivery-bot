@@ -1,8 +1,8 @@
-import React from 'react';
-import type { Order } from '../types';
+import React from 'react'
+import type { Order } from '../types'
 
 interface OrderListProps {
-    orders: Order[];  
+    orders: Order[]
 }
 
 const OrderList: React.FC<OrderListProps> = ({ orders }) => {
@@ -14,51 +14,51 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
             icon: '⏳', 
             text: 'text-orange-700',
             bg: 'bg-orange-50 border-orange-200'
-            };
+            }
         case 'ASSIGNED': 
             return { 
             color: 'bg-blue-500', 
             icon: '🔄', 
             text: 'text-blue-700',
             bg: 'bg-blue-50 border-blue-200'
-            };
+            }
         case 'PICKED_UP': 
             return { 
             color: 'bg-purple-500', 
             icon: '📦', 
             text: 'text-purple-700',
             bg: 'bg-purple-50 border-purple-200'
-            };
+            }
         case 'DELIVERED': 
             return { 
             color: 'bg-green-500', 
             icon: '✅', 
             text: 'text-green-700',
             bg: 'bg-green-50 border-green-200'
-            };
+            }
         case 'CANCELLED': 
             return { 
             color: 'bg-red-500', 
             icon: '❌', 
             text: 'text-red-700',
             bg: 'bg-red-50 border-red-200'
-            };
+            }
         default: 
             return { 
             color: 'bg-gray-500', 
             icon: '❓', 
             text: 'text-gray-700',
             bg: 'bg-gray-50 border-gray-200'
-            };
+            }
         }
-    };
+    }
 
     const restaurantIcons: Record<string, string> = {
         RAMEN: '🍜',
         PIZZA: '🍕', 
         CURRY: '🍛',
         SUSHI: '🍣'
-    };
+    }
 
     return (
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
@@ -84,7 +84,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
             </div>
             ) : (
             orders.map((order, index) => {
-                const statusConfig = getStatusConfig(order.status);
+                const statusConfig = getStatusConfig(order.status)
                 return (
                 <div
                     key={order.id}
@@ -135,12 +135,12 @@ const OrderList: React.FC<OrderListProps> = ({ orders }) => {
                     </div>
                     </div>
                 </div>
-                );
+                )
             })
             )}
         </div>
         </div>
-    );
-};
+    )
+}
 
-export default OrderList;
+export default OrderList
