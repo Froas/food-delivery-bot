@@ -1,5 +1,6 @@
-import React from 'react'
-import type { MapGrid, GridCell } from '../types'
+import React, { useState, useEffect } from 'react'
+import type { MapGrid, GridCell, BlockedPathsResponse } from '../types'
+import { ApiService } from '../services/api'
 import robotUrl from '../assets/svg/robot.svg'
 
 interface GridMapProps {
@@ -9,6 +10,101 @@ interface GridMapProps {
 }
 
 const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick }) => {
+    const [blockedPaths, setBlockedPaths] = useState<BlockedPathsResponse | null>(null)
+    const [loadingBlockedPaths, setLoadingBlockedPaths] = useState(false)
+
+    useEffect(() => {
+        const loadBlockedPaths = async () => {
+            try {
+                setLoadingBlockedPaths(true)
+                const data = await ApiService.getBlockedPaths()
+                setBlockedPaths(data)
+                console.log('Loaded blocked paths:', data)
+            } catch (error) {
+                console.error('Failed to load blocked paths:', error)
+            } finally {
+                setLoadingBlockedPaths(false)
+            }
+        }
+
+        loadBlockedPaths()
+    }, [])
+
+    const isPathBlocked = (fromX: number, fromY: number, toX: number, toY: number): boolean => {
+        if (!blockedPaths) return false
+        
+        return blockedPaths.blocked_segments.some(segment => 
+            (segment.from_x === fromX && segment.from_y === fromY && 
+            segment.to_x === toX && segment.to_y === toY) ||
+            (segment.from_x === toX && segment.from_y === toY && 
+            segment.to_x === fromX && segment.to_y === fromY)
+        )
+    }
+
+
+    const getBlockedPathOverlay = (x: number, y: number): JSX.Element[] => {
+        if (!blockedPaths) return []
+
+        const overlays: JSX.Element[] = []
+
+        const directions = [
+            { 
+                dx: 1, dy: 0, 
+                className: 'right-0 top-0 h-full w-3', 
+                name: 'right',
+                borderStyle: 'border-r-4 border-red-600'
+            },
+            { 
+                dx: -1, dy: 0, 
+                className: 'left-0 top-0 h-full w-3', 
+                name: 'left',
+                borderStyle: 'border-l-4 border-red-600'
+            },
+            { 
+                dx: 0, dy: 1, 
+                className: 'bottom-0 left-0 w-full h-3', 
+                name: 'down',
+                borderStyle: 'border-b-4 border-red-600'
+            },
+            { 
+                dx: 0, dy: -1, 
+                className: 'top-0 left-0 w-full h-3', 
+                name: 'up',
+                borderStyle: 'border-t-4 border-red-600'
+            }
+        ]
+
+        directions.forEach((dir) => {
+            const neighborX = x + dir.dx
+            const neighborY = y + dir.dy
+
+
+            if (neighborX >= 0 && neighborX < 9 && neighborY >= 0 && neighborY < 9) {
+                if (isPathBlocked(x, y, neighborX, neighborY)) {
+                    overlays.push(
+                        <div
+                            key={`blocked-${dir.name}-${x}-${y}`}
+                            className={`absolute ${dir.className} z-30`}
+                            title="⛔ BLOCKED PATH - Robots Cannot Pass!"
+                        >
+                            {/* Red barrier */}
+                            <div className={`w-full h-full bg-red-600 ${dir.borderStyle} opacity-90 shadow-lg`}>
+                                <div className="w-full h-full bg-gradient-to-br from-red-500 to-red-800"></div>
+                            </div>
+                            
+                            {/* Warning symbol */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-white text-xs font-bold drop-shadow-lg">🚫</span>
+                            </div>
+                        </div>
+                    )
+                }
+            }
+        })
+
+        return overlays
+    }
+
     if (!gridData) {
         return (
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
@@ -28,11 +124,11 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
         if (!cell) return null
 
         let cellClasses = 'w-12 h-12 border-2 border-gray-300 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 hover:z-10 relative group text-xs font-bold'
-        let cellContent = ''
+        let cellContent: string | JSX.Element = ''
         let bgColor = 'bg-gray-50 hover:bg-blue-100 hover:border-blue-400'
         let shadowClass = 'hover:shadow-lg'
         
-        // Enhanced cell styling
+
         if (cell.is_restaurant) {
         const restaurantIcons: Record<string, string> = {
             RAMEN: '🍜',
@@ -53,7 +149,7 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
         shadowClass = 'shadow-md hover:shadow-xl'
         }
 
-        // Bot styling with enhanced effects
+
         if (cell.bots && cell.bots.length > 0) {
         const bot = cell.bots[0]
         bgColor = 'bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 border-blue-500 animate-pulse'
@@ -66,7 +162,7 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
         }
         }
 
-        // Order indicators
+
         if (cell.active_orders && cell.active_orders.length > 0) {
         cellClasses += ' ring-2 ring-orange-500 ring-opacity-60'
         }
@@ -78,14 +174,20 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             onClick={() => onCellClick(x, y, cell)}
             title={`(${x},${y}) ${cell.name}`}
         >
-            <div className="text-lg mb-1">{cellContent}</div>
-            <div className="text-xs text-gray-700 font-medium bg-white/70 px-1 rounded">{x},{y}</div>
+            <div className="text-lg mb-1 z-20 relative">{cellContent}</div>
+            <div className="text-xs text-gray-700 font-medium bg-white/70 px-1 rounded z-20 relative">{x},{y}</div>
             
-            {/* Tooltip */}
+
+            {getBlockedPathOverlay(x, y)}
+            
+
             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-30">
             {cell.name} ({x},{y})
             {cell.bots && cell.bots.length > 0 && (
                 <div>Bot #{cell.bots[0]?.id} - {cell.bots[0]?.battery_level}% battery</div>
+            )}
+            {cell.active_orders && cell.active_orders.length > 0 && (
+                <div className="text-orange-300">{cell.active_orders.length} active orders</div>
             )}
             </div>
         </div>
@@ -103,8 +205,18 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             9×9 Grid
             </div>
         </div>
+
+
+        {loadingBlockedPaths && (
+            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="flex items-center gap-2 text-yellow-800">
+                <div className="w-4 h-4 border-2 border-yellow-600 border-t-transparent rounded-full animate-spin"></div>
+                <span>Loading blocked paths...</span>
+            </div>
+            </div>
+        )}
         
-        {/* Enhanced Grid Container */}
+
         <div className="relative">
             <div className="grid grid-cols-9 gap-2 p-4 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-gray-300">
             {Array.from({ length: 9 }, (_, y) =>
@@ -112,7 +224,7 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             )}
             </div>
             
-            {/* Grid coordinates */}
+
             <div className="absolute -left-8 top-4 bottom-4 flex flex-col justify-around text-xs text-gray-500 font-medium">
             {Array.from({ length: 9 }, (_, i) => (
                 <div key={i} className="flex items-center justify-center w-6 h-12">
@@ -129,11 +241,11 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
             </div>
         </div>
         
-        <div className="mt-8 grid grid-cols-2 gap-4 text-sm">
+        <div className="mt-8 grid grid-cols-3 gap-4 text-sm">
             <div className="space-y-2">
             <div className="flex items-center gap-3 p-2 bg-blue-50 rounded-lg">
                 <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-600 rounded flex items-center justify-center">
-                  <img src={robotUrl} alt="Robot" className="w-5 h-5" />
+                <img src={robotUrl} alt="Robot" className="w-5 h-5" />
                 </div>
                 <span className="font-medium text-blue-800">Delivery Bot</span>
             </div>
@@ -152,13 +264,27 @@ const GridMap: React.FC<GridMapProps> = ({ gridData, selectedBot, onCellClick })
                 <span className="font-medium text-purple-800">Bot Station</span>
             </div>
             </div>
+
+            <div className="space-y-2">
+            <div className="flex items-center gap-3 p-2 bg-red-50 rounded-lg">
+                <div className="w-6 h-6 bg-red-600 rounded flex items-center justify-center text-white font-bold">🚫</div>
+                <span className="font-medium text-red-800">Blocked Path</span>
+            </div>
+            <div className="text-xs text-gray-600 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                <div className="flex items-center gap-2 mb-1">
+                <span className="text-amber-600">⚠️</span>
+                <span className="font-bold text-amber-800">IMPORTANT</span>
+                </div>
+                Red barriers show where robots <strong>CANNOT PASS</strong>
+            </div>
+            </div>
         </div>
         
         {selectedBot && (
             <div className="mt-4 p-3 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
             <div className="flex items-center gap-2">
                 <span className="text-blue-600">🎯</span>
-                <span className="text-blue-800 font-medium">Bot #{selectedBot} selected - Click any empty cell to move</span>
+                <span className="text-blue-800 font-medium">Bot #{selectedBot} selected - Click any empty cell to move (pathfinding will avoid blocked paths)</span>
             </div>
             </div>
         )}

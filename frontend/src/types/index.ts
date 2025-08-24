@@ -77,11 +77,8 @@ export interface BlockedSegment {
 }
 
 export interface BlockedPathsResponse {
-    blocked_paths: BlockedPath[]
-    total_blocked: number
-    visualization_data: {
-        blocked_segments: BlockedSegment[]
-    }
+    total_blocked: number;
+    blocked_segments: BlockedSegment[];
 }
 
 export interface GridCell {
@@ -108,7 +105,6 @@ export interface GridCell {
         bot_id: number | null
         location_type: 'pickup' | 'delivery'
     }>
-    // NEW: Blocked path information
     blocked_paths?: {
         right?: boolean
         left?: boolean

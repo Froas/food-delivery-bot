@@ -43,7 +43,7 @@ async def create_order(
         )
     
     import datetime
-    time_threshold = datetime.datetime.utcnow() - datetime.timedelta(seconds=30)
+    time_threshold = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=30)
     recent_orders = db.query(Order).filter(
         Order.pickup_x == order.pickup_x,
         Order.pickup_y == order.pickup_y,

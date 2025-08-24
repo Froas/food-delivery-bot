@@ -175,44 +175,30 @@ async def get_map_stats(db: Session = Depends(get_db)):
 @router.get("/map/blocked-paths")
 async def get_blocked_paths(db: Session = Depends(get_db)):
     """Get all blocked paths for frontend visualization"""
-
-    
     blocked_paths = db.query(BlockedPath).all()
     
-    path_data = []
+    visualization_data = []
     for blocked in blocked_paths:
         from_x = (blocked.from_node_id - 1) % 9
         from_y = (blocked.from_node_id - 1) // 9
         to_x = (blocked.to_node_id - 1) % 9
         to_y = (blocked.to_node_id - 1) // 9
         
-        path_data.append({
-            "from": {"x": from_x, "y": from_y, "id": blocked.from_node_id},
-            "to": {"x": to_x, "y": to_y, "id": blocked.to_node_id},
-            "created_at": blocked.created_at
+        visualization_data.append({
+            "from_x": from_x, "from_y": from_y,
+            "to_x": to_x, "to_y": to_y,
+            "direction": _get_direction(from_x, from_y, to_x, to_y)
         })
     
     return {
-        "blocked_paths": path_data,
-        "total_blocked": len(path_data),
-        "visualization_data": {
-            "blocked_segments": [
-                {
-                    "from_x": path["from"]["x"],
-                    "from_y": path["from"]["y"], 
-                    "to_x": path["to"]["x"],
-                    "to_y": path["to"]["y"],
-                    "direction": _get_direction(path["from"], path["to"])
-                }
-                for path in path_data
-            ]
-        }
+        "total_blocked": len(blocked_paths),
+        "blocked_segments": visualization_data
     }
 
-def _get_direction(from_pos: dict, to_pos: dict) -> str:
+def _get_direction(from_x: int, from_y: int, to_x: int, to_y: int) -> str:
     """Get direction of blocked path for visualization"""
-    dx = to_pos["x"] - from_pos["x"]
-    dy = to_pos["y"] - from_pos["y"]
+    dx = to_x - from_x
+    dy = to_y - from_y
     
     if dx == 1 and dy == 0:
         return "right"

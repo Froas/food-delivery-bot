@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from core.database import Base
@@ -14,3 +14,6 @@ class BlockedPath(Base):
     from_node = relationship("Node", foreign_keys=[from_node_id])
     to_node = relationship("Node", foreign_keys=[to_node_id])
 
+    __table_args__ = (
+        UniqueConstraint('from_node_id', 'to_node_id', name='unique_path'),
+    )

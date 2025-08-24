@@ -10,6 +10,7 @@ import type {
     MapGrid,
     SystemStats,
     BotRoute,
+    BlockedPathsResponse,
     ApiError
 } from '../types'
 
@@ -56,6 +57,12 @@ export class ApiService {
     }
 
   // Map & Grid APIs
+
+    static async getBlockedPaths(): Promise<BlockedPathsResponse> {
+        const response: AxiosResponse<BlockedPathsResponse> = await apiClient.get('/api/v1/map/blocked-paths');
+        return response.data;
+    }
+
     static async getMapGrid(): Promise<MapGrid> {
         const response: AxiosResponse<MapGrid> = await apiClient.get('/api/v1/map/grid')
         return response.data
