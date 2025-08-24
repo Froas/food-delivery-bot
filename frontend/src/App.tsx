@@ -2,11 +2,9 @@ import React, { useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-// hooks
 import { useMapGrid, useOrders, useRestaurants, useDeliveryPoints, useCreateOrder, useMoveBot } from './hooks/userApi'
 import type { GridCell } from './types'
 
-// components
 import SystemStats from './components/SystemStats'
 import OrderForm from './components/OrderForm'
 import GridMap from './components/GridMap'
@@ -47,7 +45,6 @@ const EagRouteApp: React.FC = () => {
             <h2 className="text-2xl font-bold text-gray-800 mb-3">Connection Error</h2>
             <p className="text-gray-600 mb-6 leading-relaxed">Unable to connect to the EagRoute backend server.</p>
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <p className="text-sm text-gray-500 font-mono">Backend: http://localhost:8000</p>
             </div>
             <button onClick={() => window.location.reload()} className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105">🔄 Retry Connection</button>
           </div>
@@ -81,13 +78,12 @@ const EagRouteApp: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      {/* HEADER: unified container (no Tailwind `container` class), no wrap */}
       <header className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 text-white shadow-2xl sticky top-0 z-50">
         <div className="mx-auto max-w-7xl px-4 lg:px-6 py-4 lg:py-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                 <img src={robotUrl} alt="Robot" className="w-12 h-12" />
+                <img src={robotUrl} alt="Robot" className="w-12 h-12" />
               </div>
               <div>
                 <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">EagRoute</h1>
@@ -109,7 +105,6 @@ const EagRouteApp: React.FC = () => {
         </div>
       </header>
 
-      {/* MAIN: same max width & paddings */}
       <main className="mx-auto max-w-7xl px-4 lg:px-6 py-6 lg:py-8">
         <div className="grid grid-cols-12 gap-4 lg:gap-6">
           <section className="col-span-12 lg:col-span-3 space-y-4 lg:space-y-6">
