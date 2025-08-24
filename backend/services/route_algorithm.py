@@ -16,12 +16,11 @@ class RouteOptimizer:
         self.restricted_nodes = self._load_restricted_nodes()
     
     def _load_blocked_paths(self) -> Set[Tuple[Tuple[int, int], Tuple[int, int]]]:
-        """Load blocked paths from database"""
         blocked_paths = set()
         
         # Get blocked paths from database
         db_blocked_paths = self.db.query(BlockedPath).all()
-        print(f"🚫 Loading {len(db_blocked_paths)} blocked paths from database")
+        print(f"Loading {len(db_blocked_paths)} blocked paths from database")
         
         for blocked in db_blocked_paths:
             # Convert node IDs to coordinates using the grid formula
@@ -41,12 +40,11 @@ class RouteOptimizer:
             blocked_paths.add((from_pos, to_pos))
             blocked_paths.add((to_pos, from_pos))
             
-            print(f"🚫 Blocked path: {from_pos} ↔ {to_pos} (IDs: {from_id} ↔ {to_id})")
+            print(f"Blocked path: {from_pos} ↔ {to_pos} (IDs: {from_id} ↔ {to_id})")
         
         return blocked_paths
     
     def _load_restricted_nodes(self) -> Dict[str, Set[Tuple[int, int]]]:
-        """Load restaurants and houses that cannot be used as transit points"""
         restricted = {
             'restaurants': set(),
             'houses': set(),
@@ -67,14 +65,14 @@ class RouteOptimizer:
         for station in bot_stations:
             restricted['bot_stations'].add((station.x, station.y))
         
-        print(f"🏪 Loaded {len(restricted['restaurants'])} restaurants as restricted transit")
-        print(f"🏠 Loaded {len(restricted['houses'])} houses as restricted transit")
-        print(f"🔌 Loaded {len(restricted['bot_stations'])} bot stations")
+        print(f"Loaded {len(restricted['restaurants'])} restaurants as restricted transit")
+        print(f"Loaded {len(restricted['houses'])} houses as restricted transit")
+        print(f"Loaded {len(restricted['bot_stations'])} bot stations")
         
         return restricted
     
     def get_neighbors(self, x: int, y: int) -> List[Tuple[int, int]]:
-        """Get valid neighboring nodes"""
+        
         neighbors = []
         directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # right, down, left, up
         
@@ -86,12 +84,12 @@ class RouteOptimizer:
         return neighbors
     
     def is_path_blocked(self, from_pos: Tuple[int, int], to_pos: Tuple[int, int]) -> bool:
-        """Check if path between two adjacent positions is blocked"""
+        
         return (from_pos, to_pos) in self.blocked_paths
     
     def is_node_restricted_for_transit(self, position: Tuple[int, int], destination: Tuple[int, int], 
-                                     start: Tuple[int, int]) -> bool:
-        """Check if a node is restricted for transit (but allowed as start/end point)"""
+                                    start: Tuple[int, int]) -> bool:
+        
         # Allow start and destination positions always
         if position == destination or position == start:
             return False
@@ -105,7 +103,7 @@ class RouteOptimizer:
         return False
     
     def dijkstra(self, start: Tuple[int, int], end: Tuple[int, int]) -> List[Tuple[int, int]]:
-        """Find shortest path between two points avoiding blocked paths and restricted nodes"""
+
         if start == end:
             return [start]
         
@@ -114,7 +112,7 @@ class RouteOptimizer:
         pq = [(0, start)]
         visited = set()
         
-        print(f"🗺️ Finding path: {start} → {end}")
+        print(f"Finding path: {start} → {end}")
         
         while pq:
             current_dist, current = heapq.heappop(pq)
@@ -132,7 +130,7 @@ class RouteOptimizer:
                     current = previous[current]
                 path.append(start)
                 result_path = path[::-1]
-                print(f"✅ Path found: {len(result_path)-1} steps")
+                print(f"Path found: {len(result_path)-1} steps")
                 return result_path
             
             for neighbor in self.get_neighbors(current[0], current[1]):
@@ -147,18 +145,18 @@ class RouteOptimizer:
                 if self.is_node_restricted_for_transit(neighbor, end, start):
                     continue
                 
-                distance = current_dist + 1  # Each step costs 1 second
+                distance = current_dist + 1 
                 
                 if neighbor not in distances or distance < distances[neighbor]:
                     distances[neighbor] = distance
                     previous[neighbor] = current
                     heapq.heappush(pq, (distance, neighbor))
         
-        print(f"❌ No path found from {start} to {end}")
-        return []  # No path found
+        print(f"No path found from {start} to {end}")
+        return []  
     
     def calculate_total_distance(self, points: List[Tuple[int, int]]) -> int:
-        """Calculate total distance for a sequence of points"""
+        # Calculate total distance for a sequence of points
         if len(points) < 2:
             return 0
         
@@ -166,13 +164,13 @@ class RouteOptimizer:
         for i in range(len(points) - 1):
             path = self.dijkstra(points[i], points[i + 1])
             if not path:
-                return float('inf')  # No valid path
+                return float('inf')  
             total += len(path) - 1
         
         return total
     
     def optimize_delivery_route(self, bot: Bot, orders: List[Order]) -> Dict:
-        """Optimize route for multiple pickups and deliveries"""
+        # Optimize route for multiple pickups and deliveries 
         if not orders:
             return {
                 "route_points": [],
@@ -181,12 +179,12 @@ class RouteOptimizer:
                 "detailed_path": []
             }
         
-        # Start from bot's current position
+        # Start from bot current position
         current_pos = (bot.current_x, bot.current_y)
         route_points = [{"x": current_pos[0], "y": current_pos[1], "type": "start", "order_id": None}]
         
-        # For each order, we need to visit pickup then delivery
-        # Using a simple approach: visit orders by creation time (FIFO)
+
+        # FIFO
         detailed_path = [current_pos]
         total_distance = 0
         
@@ -211,7 +209,7 @@ class RouteOptimizer:
                         "restaurant_type": order.restaurant_type
                     })
                 else:
-                    print(f"❌ No path to pickup {pickup_pos} for order {order.id}")
+                    print(f"No path to pickup {pickup_pos} for order {order.id}")
             
             # Go to delivery
             path_to_delivery = self.dijkstra(current_pos, delivery_pos)
@@ -228,17 +226,17 @@ class RouteOptimizer:
                     "customer_name": order.customer_name
                 })
             else:
-                print(f"❌ No path to delivery {delivery_pos} for order {order.id}")
+                print(f"No path to delivery {delivery_pos} for order {order.id}")
         
         return {
             "route_points": route_points,
             "total_distance": total_distance,
-            "estimated_time": total_distance,  # 1 second per unit
+            "estimated_time": total_distance,  
             "detailed_path": detailed_path
         }
     
     def find_nearest_restaurant(self, position: Tuple[int, int], restaurant_type: str) -> Optional[Tuple[int, int]]:
-        """Find nearest restaurant of specified type"""
+        
         restaurants = self.db.query(Node).filter(
             Node.is_restaurant == True,
             Node.restaurant_type == restaurant_type.upper()
@@ -262,7 +260,7 @@ class RouteOptimizer:
         return nearest
     
     def validate_path(self, path: List[Tuple[int, int]]) -> bool:
-        """Validate that a path doesn't violate any restrictions"""
+        
         if len(path) < 2:
             return True
         
@@ -272,22 +270,21 @@ class RouteOptimizer:
             
             # Check if path segment is blocked
             if self.is_path_blocked(current, next_pos):
-                print(f"❌ Path validation failed: blocked segment {current} → {next_pos}")
+                print(f"Path validation failed: blocked segment {current} → {next_pos}")
                 return False
             
-            # Check if intermediate nodes are restaurants/houses (not allowed for transit)
-            if i > 0 and i < len(path) - 1:  # Not start or end
+
+            if i > 0 and i < len(path) - 1:  
                 if self.is_node_restricted_for_transit(current, path[-1], path[0]):
-                    print(f"❌ Path validation failed: transit through restricted node {current}")
+                    print(f"Path validation failed: transit through restricted node {current}")
                     return False
         
         return True
     
     def get_alternative_routes(self, start: Tuple[int, int], end: Tuple[int, int], 
         count: int = 3) -> List[List[Tuple[int, int]]]:
-        """Get multiple alternative routes (for future enhancement)"""
-        # For now, just return the single best route
-        # This could be enhanced to find K shortest paths
+
+
         main_route = self.dijkstra(start, end)
         if main_route:
             return [main_route]
