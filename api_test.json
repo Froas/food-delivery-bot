@@ -1,8 +1,8 @@
 {
   "info": {
     "name": "EagRoute API Tests - Complete Collection",
-    "description": "Complete test collection for EagRoute delivery bot system with all endpoints",
-    "version": "1.1.0",
+    "description": "Complete test collection for EagRoute delivery bot system with all endpoints - Updated coordinates",
+    "version": "1.2.0",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -194,19 +194,19 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/bots/1/move?x=2&y=3",
+              "raw": "{{baseUrl}}/api/v1/bots/1/move?x=4&y=2",
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "bots", "1", "move"],
               "query": [
                 {
                   "key": "x",
-                  "value": "2",
-                  "description": "X coordinate (0-8)"
+                  "value": "4",
+                  "description": "X coordinate (0-9)"
                 },
                 {
                   "key": "y",
-                  "value": "3",
-                  "description": "Y coordinate (0-8)"
+                  "value": "2",
+                  "description": "Y coordinate (0-9)"
                 }
               ]
             }
@@ -253,7 +253,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_name\": \"John Doe\",\n  \"customer_phone\": \"+1234567890\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 6,\n  \"pickup_y\": 2,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
+              "raw": "{\n  \"customer_name\": \"John Doe\",\n  \"customer_phone\": \"+1234567890\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 7,\n  \"pickup_y\": 4,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/orders/",
@@ -274,7 +274,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_name\": \"Alice Smith\",\n  \"customer_phone\": \"+1987654321\",\n  \"restaurant_type\": \"RAMEN\",\n  \"pickup_x\": 2,\n  \"pickup_y\": 3,\n  \"delivery_x\": 1,\n  \"delivery_y\": 0\n}"
+              "raw": "{\n  \"customer_name\": \"Alice Smith\",\n  \"customer_phone\": \"+1987654321\",\n  \"restaurant_type\": \"RAMEN\",\n  \"pickup_x\": 4,\n  \"pickup_y\": 2,\n  \"delivery_x\": 1,\n  \"delivery_y\": 0\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/orders/",
@@ -295,7 +295,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_name\": \"Bob Wilson\",\n  \"restaurant_type\": \"SUSHI\",\n  \"pickup_x\": 1,\n  \"pickup_y\": 5,\n  \"delivery_x\": 5,\n  \"delivery_y\": 7\n}"
+              "raw": "{\n  \"customer_name\": \"Bob Wilson\",\n  \"restaurant_type\": \"SUSHI\",\n  \"pickup_x\": 4,\n  \"pickup_y\": 7,\n  \"delivery_x\": 6,\n  \"delivery_y\": 7\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/orders/",
@@ -316,7 +316,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_name\": \"Carol Davis\",\n  \"restaurant_type\": \"CURRY\",\n  \"pickup_x\": 4,\n  \"pickup_y\": 5,\n  \"delivery_x\": 8,\n  \"delivery_y\": 1\n}"
+              "raw": "{\n  \"customer_name\": \"Carol Davis\",\n  \"restaurant_type\": \"CURRY\",\n  \"pickup_x\": 3,\n  \"pickup_y\": 5,\n  \"delivery_x\": 9,\n  \"delivery_y\": 1\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/orders/",
@@ -465,7 +465,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routes/distance?start_x=0&start_y=0&end_x=8&end_y=8",
+              "raw": "{{baseUrl}}/api/v1/routes/distance?start_x=0&start_y=0&end_x=9&end_y=9",
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "routes", "distance"],
               "query": [
@@ -479,11 +479,11 @@
                 },
                 {
                   "key": "end_x",
-                  "value": "8"
+                  "value": "9"
                 },
                 {
                   "key": "end_y",
-                  "value": "8"
+                  "value": "9"
                 }
               ]
             }
@@ -495,7 +495,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routes/distance?start_x=4&start_y=4&end_x=6&end_y=2",
+              "raw": "{{baseUrl}}/api/v1/routes/distance?start_x=4&start_y=2&end_x=7&end_y=4",
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "routes", "distance"],
               "query": [
@@ -509,11 +509,11 @@
                 },
                 {
                   "key": "end_x",
-                  "value": "6"
+                  "value": "7"
                 },
                 {
                   "key": "end_y",
-                  "value": "2"
+                  "value": "4"
                 }
               ]
             }
@@ -613,7 +613,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_name\": \"Error Test\",\n  \"restaurant_type\": \"INVALID_RESTAURANT\",\n  \"pickup_x\": 2,\n  \"pickup_y\": 3,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
+              "raw": "{\n  \"customer_name\": \"Error Test\",\n  \"restaurant_type\": \"INVALID_RESTAURANT\",\n  \"pickup_x\": 4,\n  \"pickup_y\": 2,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/orders/",
@@ -634,7 +634,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_name\": \"Error Test\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 2,\n  \"pickup_y\": 3,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
+              "raw": "{\n  \"customer_name\": \"Error Test\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 5,\n  \"pickup_y\": 5,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/orders/",
@@ -655,7 +655,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_name\": \"Error Test 2\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 6,\n  \"pickup_y\": 2,\n  \"delivery_x\": 4,\n  \"delivery_y\": 4\n}"
+              "raw": "{\n  \"customer_name\": \"Error Test 2\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 7,\n  \"pickup_y\": 4,\n  \"delivery_x\": 5,\n  \"delivery_y\": 5\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/orders/",
@@ -770,7 +770,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routes/distance?start_x=-1&start_y=0&end_x=8&end_y=8",
+              "raw": "{{baseUrl}}/api/v1/routes/distance?start_x=-1&start_y=0&end_x=9&end_y=9",
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "routes", "distance"],
               "query": [
@@ -784,11 +784,11 @@
                 },
                 {
                   "key": "end_x",
-                  "value": "8"
+                  "value": "9"
                 },
                 {
                   "key": "end_y",
-                  "value": "8"
+                  "value": "9"
                 }
               ]
             }
@@ -823,7 +823,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_name\": \"Simulation Customer\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 6,\n  \"pickup_y\": 2,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
+              "raw": "{\n  \"customer_name\": \"Simulation Customer\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 7,\n  \"pickup_y\": 4,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/orders/",
@@ -862,19 +862,19 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/bots/1/move?x=6&y=2",
+              "raw": "{{baseUrl}}/api/v1/bots/1/move?x=7&y=4",
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "bots", "1", "move"],
               "query": [
                 {
                   "key": "x",
-                  "value": "6",
-                  "description": "Pizza Corner X"
+                  "value": "7",
+                  "description": "Pizza Restaurant X"
                 },
                 {
                   "key": "y",
-                  "value": "2",
-                  "description": "Pizza Corner Y"
+                  "value": "4",
+                  "description": "Pizza Restaurant Y"
                 }
               ]
             }
@@ -916,7 +916,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_name\": \"Stress Test Customer\",\n  \"restaurant_type\": \"RAMEN\",\n  \"pickup_x\": 2,\n  \"pickup_y\": 3,\n  \"delivery_x\": 5,\n  \"delivery_y\": 0\n}"
+              "raw": "{\n  \"customer_name\": \"Stress Test Customer\",\n  \"restaurant_type\": \"RAMEN\",\n  \"pickup_x\": 4,\n  \"pickup_y\": 2,\n  \"delivery_x\": 5,\n  \"delivery_y\": 0\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/orders/",
@@ -937,7 +937,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_name\": \"Load Test {{$randomInt}}\",\n  \"restaurant_type\": \"CURRY\",\n  \"pickup_x\": 4,\n  \"pickup_y\": 5,\n  \"delivery_x\": 8,\n  \"delivery_y\": 5\n}"
+              "raw": "{\n  \"customer_name\": \"Load Test {{$randomInt}}\",\n  \"restaurant_type\": \"CURRY\",\n  \"pickup_x\": 3,\n  \"pickup_y\": 5,\n  \"delivery_x\": 8,\n  \"delivery_y\": 0\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/orders/",
@@ -970,7 +970,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_name\": \"Capacity Test {{$randomInt}}\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 6,\n  \"pickup_y\": 2,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
+              "raw": "{\n  \"customer_name\": \"Capacity Test {{$randomInt}}\",\n  \"restaurant_type\": \"PIZZA\",\n  \"pickup_x\": 7,\n  \"pickup_y\": 4,\n  \"delivery_x\": 0,\n  \"delivery_y\": 0\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/orders/",
