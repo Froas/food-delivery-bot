@@ -11,7 +11,6 @@ import type {
     SystemStats,
     BotRoute,
     BlockedPathsResponse,
-    ApiError
 } from '../types'
 
 const API_BASE_URL = 'http://localhost:8000'
@@ -27,11 +26,32 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
     (config) => {
+
+        if (
+            config.url &&
+            !config.url.startsWith('/docs') &&
+            !config.url.endsWith('/health') &&
+            config.url !== '/'
+        ) {
+            const internalSecret = import.meta.env.VITE_INTERNAL_SECRET
+            console.log('🔑 Secret from env:', internalSecret ? 'EXISTS' : 'MISSING') 
+            
+            if (internalSecret && typeof internalSecret === 'string') {
+                config.headers = {
+                    ...config.headers,
+                    'x-internal-secret': internalSecret,
+                }
+            } else {
+                console.error('❌ VITE_INTERNAL_SECRET not found or invalid!')
+                console.error('Available env vars:', Object.keys(import.meta.env))
+            }
+        }
         console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`)
+        console.log('📋 Headers:', config.headers) 
         return config
     },
     (error) => {
-        console.error('PI Request Error:', error)
+        console.error('API Request Error:', error) 
         return Promise.reject(error)
     }
 )

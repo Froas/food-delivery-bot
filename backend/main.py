@@ -1,6 +1,7 @@
 
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from middleware.internal_secret import InternalSecretMiddleware
 from contextlib import asynccontextmanager
 import socketio
 from core.database import engine, create_tables
@@ -34,8 +35,11 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="EagRoute API",
     description="Delivery Bot Route Optimization System",
-    version="1.0.0",
+    version="1.5.0",
     lifespan=lifespan
+)
+app.add_middleware(
+    InternalSecretMiddleware
 )
 
 app.add_middleware(
@@ -45,6 +49,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # auto_pilot = AutoPilotService()
 

@@ -3,6 +3,7 @@
     // Environment setup & latest features
     "lib": ["dom", "ESNext"],
     "target": "ESNext",
+    "types": ["vite/client"],
     "module": "Preserve",
     "moduleDetection": "force",
     "jsx": "react-jsx",
