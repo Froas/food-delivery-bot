@@ -154,7 +154,7 @@ EagRoute/
 - Restaurant capacity management
 - Real-time status updates
 
-## 💻 **Development Highlights**
+## **Development Highlights**
 
 ### **Backend Excellence**
 - **Async/await architecture** for handling thousands of concurrent requests
@@ -174,7 +174,7 @@ EagRoute/
 - **Component reusability** with proper props interfaces
 
 
-## 🐳 **Deployment Ready**
+##  **Deployment Ready**
 
 - **Docker containerization** for both frontend and backend
 - **docker-compose** orchestration with proper networking
@@ -182,7 +182,7 @@ EagRoute/
 - **Production-ready** settings with CORS configuration
 
 
-## 🔍 **How to Evaluate**
+## **How to Evaluate**
 
 ### **1. Quick Start **
 ```bash
@@ -210,20 +210,6 @@ docker-compose up --build
 4. Observe real-time updates across the interface
 5. Test error scenarios (invalid locations, capacity limits)
 
-##  **Technical Decisions & Trade-offs**
-
-### **Why FastAPI + PostgreSQL + Socket.IO?**
-- **FastAPI**: Superior async performance, automatic API docs, Pydantic integration
-- **PostgreSQL**: ACID compliance, advanced indexing, JSON support, enterprise reliability  
-- **SQLAlchemy ORM**: Database abstraction, relationship management, query optimization
-- **Pydantic**: Runtime validation, automatic serialization, comprehensive error reporting
-- **Socket.IO**: Reliable real-time communication with auto-reconnection, room management, and fallback protocols
-
-### **Why React + TypeScript?**
-- Type safety reduces runtime errors and improves developer productivity
-- Component reusability with strongly-typed props interfaces  
-- Excellent tooling support and modern development experience
-- Seamless integration with backend API through typed interfaces
 
 ## **Assignment Requirements Met**
 
@@ -241,4 +227,9 @@ docker-compose up --build
 
 **Time Investment:** ~40 hours | **Test Coverage:** 60+ API tests
 
-*This project demonstrates proficiency in modern full-stack development, algorithm implementation, system design, and software engineering best practices.*
+  **Project Status & IP Notice**
+
+> This repository contains my personal implementation of a food-delivery simulation created for a coding assignment.
+
+- Copyright © 2025 https://github.com/froas.
+- Licensed under the MIT License
