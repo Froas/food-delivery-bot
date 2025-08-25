@@ -20,15 +20,20 @@ const OrderForm: React.FC<OrderFormProps> = ({
         customer_name: '',
         customer_phone: '',
         restaurant_type: '' as 'RAMEN' | 'CURRY' | 'PIZZA' | 'SUSHI' | '',
-        pickup_x: 0,
-        pickup_y: 0,
-        delivery_x: 0,
-        delivery_y: 0
+        pickup_x: null as number | null,
+        pickup_y: null as number | null,
+        delivery_x: null as number | null,
+        delivery_y: null as number | null
     })
     const [error, setError] = useState('')
 
     const handleSubmit = async () => {
-        if (!formData.customer_name || !formData.restaurant_type || !formData.delivery_x) {
+        if (
+            !formData.customer_name ||
+            !formData.restaurant_type ||
+            formData.delivery_x === null ||
+            formData.delivery_y === null
+        ) {
             setError('Please fill in all required fields')
         return
         }
@@ -50,10 +55,10 @@ const OrderForm: React.FC<OrderFormProps> = ({
             customer_name: '',
             customer_phone: '',
             restaurant_type: '',
-            pickup_x: 0,
-            pickup_y: 0,
-            delivery_x: 0,
-            delivery_y: 0
+            pickup_x: null,
+            pickup_y: null,
+            delivery_x: null,
+            delivery_y: null
         })
         onOrderCreated()
         } catch (err) {
@@ -155,17 +160,21 @@ const OrderForm: React.FC<OrderFormProps> = ({
                 <span className="text-red-500">*</span>
             </label>
             <select
-                value={`${formData.delivery_x},${formData.delivery_y}`}
+                value={
+                    formData.delivery_x === null || formData.delivery_y === null
+                    ? ''
+                    : `${formData.delivery_x},${formData.delivery_y}`
+                }
                 onChange={(e) => {
-                const [xStr, yStr] = e.target.value.split(',')
-                const x = Number(xStr)
-                const y = Number(yStr)
-                setFormData(prev => ({...prev, delivery_x: x, delivery_y: y}))
+                    const [xStr, yStr] = e.target.value.split(',')
+                    const x = Number(xStr)
+                    const y = Number(yStr)
+                    setFormData(prev => ({ ...prev, delivery_x: x, delivery_y: y }))
                 }}
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all group-hover:border-gray-300"
                 required
             >
-                <option value="0,0">Select Delivery Address</option>
+                <option value="">Select Delivery Address</option>
                 {deliveryPoints.map(point => (
                 <option key={point.id} value={`${point.x},${point.y}`}>
                     {point.name} - ({point.x}, {point.y})
