@@ -104,7 +104,6 @@ const SystemStats: React.FC<SystemStatsProps> = ({ gridData, orders }) => {
                     {stat.value}
                 </div>
                 </div>
-                <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full"></div>
                 <div className="absolute -bottom-2 -left-2 w-8 h-8 bg-white/5 rounded-full"></div>
             </div>
             ))}
