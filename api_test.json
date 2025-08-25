@@ -201,12 +201,12 @@
                 {
                   "key": "x",
                   "value": "4",
-                  "description": "X coordinate (0-9)"
+                  "description": "X coordinate (0-8)"
                 },
                 {
                   "key": "y",
                   "value": "2",
-                  "description": "Y coordinate (0-9)"
+                  "description": "Y coordinate (0-8)"
                 }
               ]
             }
@@ -465,7 +465,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/routes/distance?start_x=0&start_y=0&end_x=9&end_y=9",
+              "raw": "{{baseUrl}}/api/v1/routes/distance?start_x=0&start_y=0&end_x=8&end_y=8",
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "routes", "distance"],
               "query": [
@@ -479,11 +479,11 @@
                 },
                 {
                   "key": "end_x",
-                  "value": "9"
+                  "value": "8"
                 },
                 {
                   "key": "end_y",
-                  "value": "9"
+                  "value": "8"
                 }
               ]
             }
