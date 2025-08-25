@@ -111,7 +111,6 @@ const EagRouteApp: React.FC = () => {
       <main className="mx-auto max-w-7xl px-4 lg:px-6 py-6 lg:py-8">
         <div className="grid grid-cols-12 gap-4 lg:gap-6">
           <section className="col-span-12 lg:col-span-3 space-y-4 lg:space-y-6">
-            <SystemStats gridData={gridData ?? null} orders={orders ?? []} />
             <OrderForm restaurants={restaurants ?? []} deliveryPoints={deliveryPoints ?? []} onOrderCreated={() => {}} createOrderMutation={createOrderMutation} />
           </section>
 
@@ -120,6 +119,7 @@ const EagRouteApp: React.FC = () => {
           </section>
 
           <aside className="col-span-12 lg:col-span-3">
+            <SystemStats gridData={gridData ?? null} orders={orders ?? []} />
             <OrderList orders={orders ?? []} />
           </aside>
         </div>
